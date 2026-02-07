@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Video, Music } from "lucide-react";
 
 interface CategoryChipsProps {
   mode: "video" | "audio";
@@ -7,30 +8,30 @@ interface CategoryChipsProps {
 
 const CategoryChips = ({ mode, onModeChange }: CategoryChipsProps) => {
   return (
-    <div className="flex gap-3">
+    <div className="flex bg-card border border-border rounded-xl overflow-hidden">
       <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileTap={{ scale: 0.97 }}
         onClick={() => onModeChange("video")}
-        className={`px-6 py-3 rounded-lg text-sm font-bold uppercase tracking-widest transition-all duration-200 ${
+        className={`flex items-center gap-2 px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-200 ${
           mode === "video"
-            ? "bg-primary text-primary-foreground box-glow"
-            : "bg-secondary text-secondary-foreground border border-border hover:border-primary/50"
+            ? "bg-primary text-primary-foreground"
+            : "text-muted-foreground hover:text-foreground"
         }`}
       >
-        ▶ Video
+        <Video className="w-4 h-4" />
+        Video
       </motion.button>
       <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileTap={{ scale: 0.97 }}
         onClick={() => onModeChange("audio")}
-        className={`px-6 py-3 rounded-lg text-sm font-bold uppercase tracking-widest transition-all duration-200 ${
+        className={`flex items-center gap-2 px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-200 ${
           mode === "audio"
-            ? "bg-primary text-primary-foreground box-glow"
-            : "bg-secondary text-secondary-foreground border border-border hover:border-primary/50"
+            ? "bg-primary text-primary-foreground"
+            : "text-muted-foreground hover:text-foreground"
         }`}
       >
-        ♫ Audio
+        <Music className="w-4 h-4" />
+        Audio
       </motion.button>
     </div>
   );
