@@ -1,209 +1,138 @@
-# DVZOLL — Universal Media Downloader
+<div align="center">
+  <img src="src/assets/logo.png" alt="DVZOLL" width="80" height="80" style="border-radius: 16px;" />
+  <h1>DVZOLL</h1>
+  <p><strong>Grab any media. Instantly.</strong></p>
+  <p>Download video & audio from YouTube, Spotify, and 1000+ platforms.<br/>Maximum quality. Zero hassle.</p>
 
-Download videos and audio from YouTube, Spotify, and 1000+ platforms. Available as a **web app** and a **native desktop app** (macOS, Linux, Windows) powered by [Tauri](https://tauri.app).
+  <br/>
 
----
+  <a href="https://dvzoll.lovable.app"><img src="https://img.shields.io/badge/🌐_Live_App-dvzoll.lovable.app-00ff88?style=for-the-badge" alt="Live App" /></a>
+  <img src="https://img.shields.io/badge/platforms-macOS_·_Linux_·_Windows-1a1a2e?style=for-the-badge" alt="Platforms" />
+  <img src="https://img.shields.io/badge/engines-yt--dlp_·_spotdl_·_ffmpeg-1a1a2e?style=for-the-badge" alt="Engines" />
 
-## 🌐 Web App
-
-The web app is live at **[dvzoll.lovable.app](https://dvzoll.lovable.app)**
-
----
-
-## 🖥️ Desktop App (v2)
-
-The desktop version bundles real download engines (**yt-dlp**, **spotdl**, **ffmpeg**) so downloads actually work locally on your machine.
-
-### Supported Platforms
-
-| Platform | Status | Setup Script |
-|----------|--------|--------------|
-| macOS    | ✅ Primary | `scripts/setup-macos.sh` |
-| Linux    | ✅ Supported | `scripts/setup-linux.sh` |
-| Windows  | ✅ Supported | `scripts/setup-windows.ps1` |
+</div>
 
 ---
 
-## 🚀 Quick Start (macOS — Primary)
+## ⚡ What is DVZOLL?
 
-### Step 1: Clone the repository
+A universal media downloader that actually works — available as a **web app** and a **native desktop app** powered by [Tauri](https://tauri.app).
 
-```sh
-git clone <YOUR_GIT_URL>
-cd dvzoll
-```
-
-### Step 2: Run the setup script
-
-This installs **all prerequisites** automatically (Xcode CLT, Homebrew, Rust, Node.js, ffmpeg, yt-dlp, spotdl):
-
-```sh
-chmod +x scripts/setup-macos.sh
-./scripts/setup-macos.sh
-```
-
-### Step 3: Install Node dependencies
-
-```sh
-npm install
-```
-
-### Step 4: Run in development mode
-
-```sh
-npm run tauri dev
-```
-
-This launches the app in a native window with hot-reload enabled.
-
-### Step 5: Build for production
-
-```sh
-npm run tauri build
-```
-
-The `.dmg` installer will be in `src-tauri/target/release/bundle/dmg/`.
+| | Web App | Desktop App |
+|---|---|---|
+| **Downloads** | Simulated (demo) | Real — powered by yt-dlp & spotdl |
+| **Platforms** | Any browser | macOS · Linux · Windows |
+| **Quality** | 4K / FLAC / WAV / MP3 320 | 4K / FLAC / WAV / MP3 320 |
+| **Playlists** | ✅ | ✅ |
 
 ---
 
-## 🐧 Linux Setup
+## 🚀 Quick Start
 
-### Step 1: Clone & run setup
+### Web — Just visit
 
-```sh
-git clone <YOUR_GIT_URL>
-cd dvzoll
-chmod +x scripts/setup-linux.sh
-./scripts/setup-linux.sh
-```
+> **[dvzoll.lovable.app](https://dvzoll.lovable.app)**
 
-Supports **apt** (Ubuntu/Debian), **dnf** (Fedora), and **pacman** (Arch).
-
-### Step 2: Build & run
+### Desktop — Three commands
 
 ```sh
-npm install
-npm run tauri dev      # development
-npm run tauri build    # production (.deb, .AppImage)
+git clone <YOUR_GIT_URL> && cd dvzoll
+chmod +x scripts/setup-macos.sh && ./scripts/setup-macos.sh   # installs everything
+npm install && npm run tauri dev
 ```
 
----
+That's it. The setup script handles Rust, Node, ffmpeg, yt-dlp, and spotdl automatically.
 
-## 🪟 Windows Setup
+<details>
+<summary><strong>🐧 Linux</strong></summary>
 
-### Step 1: Clone & run setup (PowerShell as Administrator)
+```sh
+chmod +x scripts/setup-linux.sh && ./scripts/setup-linux.sh
+npm install && npm run tauri dev
+```
+Supports `apt` (Ubuntu/Debian), `dnf` (Fedora), and `pacman` (Arch).
+</details>
+
+<details>
+<summary><strong>🪟 Windows</strong></summary>
 
 ```powershell
-git clone <YOUR_GIT_URL>
-cd dvzoll
 Set-ExecutionPolicy Bypass -Scope Process
 .\scripts\setup-windows.ps1
+npm install && npm run tauri dev
 ```
-
-### Step 2: Build & run
-
-```sh
-npm install
-npm run tauri dev      # development
-npm run tauri build    # production (.msi, .exe)
-```
-
-### Windows Prerequisites (installed by script)
-
-- **Visual Studio Build Tools 2022** with C++ workload
-- **WebView2 Runtime** (usually pre-installed on Windows 10/11)
-- **Rust** via rustup
-- **Node.js** LTS
+Requires Visual Studio Build Tools with C++ workload and WebView2 (usually pre-installed on Win 10/11).
+</details>
 
 ---
 
-## 📋 Prerequisites Summary
+## 🎛️ Features
 
-| Tool | Purpose | Install Method |
-|------|---------|----------------|
-| **Rust** | Tauri backend compilation | `rustup` |
-| **Node.js** | Frontend build toolchain | `nvm` / `brew` / `winget` |
-| **ffmpeg** | Audio/video processing | `brew` / `apt` / `winget` |
-| **yt-dlp** | YouTube & 1000+ site downloads | `brew` / `pip` / `winget` |
-| **spotdl** | Spotify track downloads | `pip3 install spotdl` |
-| **Python 3** | Required by spotdl | `brew` / `apt` / `winget` |
+- **Smart URL detection** — auto-identifies YouTube, Spotify, TikTok, Vimeo, Twitter, and more
+- **Video + Audio modes** — switch between video (4K → 720p) and audio (FLAC, WAV, AAC, MP3 320)
+- **Playlist downloads** — grab entire playlists with per-track progress
+- **Multi-phase progress** — fetching → downloading → converting → done
+- **Settings panel** — configure download path, concurrent downloads, tool locations
+- **3 color themes** — Cyber Green, Neon Purple, Sunset Orange
+- **Easter eggs** — Konami code, terminal, rick-roll detection 🥚
 
 ---
 
-## 🏗️ Project Structure
+## 🏗️ Architecture
 
 ```
 dvzoll/
-├── src/                    # React frontend (shared web + desktop)
-│   ├── components/         # UI components
-│   ├── pages/              # Page routes
-│   ├── hooks/              # Custom React hooks
-│   └── assets/             # Images, logos
-├── src-tauri/              # Tauri/Rust backend (desktop only)
-│   ├── src/
-│   │   ├── main.rs         # App entry point & command registration
-│   │   ├── downloader.rs   # yt-dlp & spotdl integration
-│   │   └── prerequisites.rs# Auto-install tools at runtime
-│   ├── Cargo.toml          # Rust dependencies
-│   └── tauri.conf.json     # Tauri configuration
-├── scripts/                # Platform setup scripts
+├── src/                     # React frontend (web + desktop)
+│   ├── components/          # UI — DownloadCard, UrlPreview, QualitySelector...
+│   ├── pages/               # Index, Settings, DevTerminal
+│   └── hooks/               # useConfetti, useKonamiCode, useThemeContext
+├── src-tauri/               # Tauri/Rust backend (desktop only)
+│   └── src/
+│       ├── main.rs          # Command registration
+│       ├── downloader.rs    # yt-dlp & spotdl process spawning
+│       └── prerequisites.rs # Auto-install via Homebrew/apt/winget
+├── scripts/                 # One-click setup per platform
 │   ├── setup-macos.sh
 │   ├── setup-linux.sh
 │   └── setup-windows.ps1
-├── public/                 # Static assets
-└── package.json            # Node dependencies
+└── public/                  # Static assets & favicon
 ```
 
 ---
 
-## ⚙️ How It Works
+## 📋 Prerequisites
 
-The desktop app wraps the same React UI in a native window via Tauri. When a download is triggered:
-
-1. **Frontend** sends the URL, quality, and mode to the Rust backend via Tauri commands
-2. **Rust backend** spawns `yt-dlp` or `spotdl` as a child process with the correct arguments
-3. **Files are saved** to `~/Downloads/DVZOLL/`
-4. **Progress & status** are reported back to the frontend
-
-### Download Engines
-
-- **yt-dlp** → YouTube, Vimeo, Twitter, TikTok, and 1000+ sites
-- **spotdl** → Spotify tracks, albums, and playlists
-- **ffmpeg** → Audio extraction, format conversion, video merging
-
-### Quality Options
-
-| Mode | Options |
-|------|---------|
-| Video | 4K (2160p), 2K (1440p), 1080p, 720p |
-| Audio | FLAC, WAV, AAC, MP3 320kbps |
+| Tool | Purpose | Auto-installed by setup script |
+|------|---------|:---:|
+| Rust | Tauri compilation | ✅ |
+| Node.js | Frontend toolchain | ✅ |
+| ffmpeg | Media processing | ✅ |
+| yt-dlp | YouTube + 1000 sites | ✅ |
+| spotdl | Spotify downloads | ✅ |
+| Python 3 | spotdl dependency | ✅ |
 
 ---
 
 ## 🔧 Development
 
 ```sh
-# Web app only (no Tauri)
-npm run dev
-
-# Desktop app (Tauri + web)
-npm run tauri dev
-
-# Build desktop app
-npm run tauri build
+npm run dev              # web only (no Tauri)
+npm run tauri dev        # desktop with hot-reload
+npm run tauri build      # production build (.dmg / .deb / .msi)
 ```
 
 ---
 
-## 📝 Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: React, TypeScript, Vite, Tailwind CSS, shadcn/ui, Framer Motion
-- **Desktop**: Tauri (Rust), tokio (async process management)
-- **Download**: yt-dlp, spotdl, ffmpeg
-- **Backend (web)**: Lovable Cloud
+**Frontend** — React · TypeScript · Vite · Tailwind CSS · shadcn/ui · Framer Motion
+**Desktop** — Tauri · Rust · tokio
+**Engines** — yt-dlp · spotdl · ffmpeg
 
 ---
 
-## ⚠️ Disclaimer
-
-For educational purposes only. Respect copyright laws and platform terms of service.
+<div align="center">
+  <sub>Built with obsession by <strong>DvIsZoll</strong> — because every other download site was sketch.</sub>
+  <br/>
+  <sub>⚠️ For educational purposes only. Respect copyright and platform terms of service.</sub>
+</div>
