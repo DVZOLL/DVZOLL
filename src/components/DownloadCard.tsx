@@ -7,6 +7,7 @@ import PlaylistProgress, { TrackStatus } from "./PlaylistProgress";
 import { toast } from "sonner";
 import { Link, Download, Loader2, ListMusic } from "lucide-react";
 import { useConfetti } from "@/hooks/useConfetti";
+import { useSoundEffects } from "@/hooks/useSoundEffects";
 
 const MOCK_TRACKS = [
   "Never Gonna Give You Up",
@@ -28,6 +29,7 @@ const DownloadCard = () => {
   const [showProgress, setShowProgress] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const fireConfetti = useConfetti();
+  const { playSuccess, playRickroll } = useSoundEffects();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleModeChange = (newMode: "video" | "audio") => {
@@ -70,6 +72,7 @@ const DownloadCard = () => {
             next[currentIdx] = { ...next[currentIdx], status: "downloading" };
           } else {
             if (intervalRef.current) clearInterval(intervalRef.current);
+            playSuccess();
             fireConfetti();
             toast.success("Playlist download complete! (demo simulation)");
           }
@@ -91,6 +94,7 @@ const DownloadCard = () => {
       setIsProcessing(true);
       setTimeout(() => {
         setIsProcessing(false);
+        playRickroll();
         toast("🎵 Never Gonna Give You Up!", {
           description: "You just got rick-rolled by a download manager. Respect.",
           duration: 5000,
@@ -107,6 +111,7 @@ const DownloadCard = () => {
     } else {
       setTimeout(() => {
         setIsProcessing(false);
+        playSuccess();
         fireConfetti();
         toast.success("Download complete! (demo simulation)");
       }, 2000);

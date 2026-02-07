@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { playTerminalBoot } from "@/hooks/useSoundEffects";
 
 const ASCII_LOGO = `
  ██████╗ ██╗   ██╗███████╗ ██████╗ ██╗     ██╗     
@@ -79,7 +80,7 @@ const DevTerminal = () => {
     const timers = BOOT_LINES.map((line, i) =>
       setTimeout(() => {
         setLines((prev) => [...prev, line]);
-        if (i === BOOT_LINES.length - 1) setBootDone(true);
+        if (i === BOOT_LINES.length - 1) { playTerminalBoot(); setBootDone(true); }
       }, i * 150)
     );
     return () => timers.forEach(clearTimeout);

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-
+import { playGlitch } from "@/hooks/useSoundEffects";
 const KONAMI = [
   "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
   "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight",
@@ -19,6 +19,7 @@ export const useKonamiCode = () => {
       setSequence((prev) => {
         const next = [...prev, e.key].slice(-KONAMI.length);
         if (next.length === KONAMI.length && next.every((k, i) => k === KONAMI[i])) {
+          playGlitch();
           setActivated(true);
           return [];
         }
