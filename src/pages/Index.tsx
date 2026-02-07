@@ -7,11 +7,12 @@ import AboutSection from "@/components/AboutSection";
 import MatrixRain from "@/components/MatrixRain";
 import GlitchOverlay from "@/components/GlitchOverlay";
 import SecretTerminal from "@/components/SecretTerminal";
+import KonamiPad from "@/components/KonamiPad";
 import { useKonamiCode } from "@/hooks/useKonamiCode";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 
 const Index = () => {
-  const { activated: konamiActive, reset: resetKonami } = useKonamiCode();
+  const { activated: konamiActive, reset: resetKonami, activate: activateKonami } = useKonamiCode();
   const { playGlitch, playTerminalBoot } = useSoundEffects();
   const [glitchActive, setGlitchActive] = useState(false);
   const [headlineClicks, setHeadlineClicks] = useState(0);
@@ -40,6 +41,9 @@ const Index = () => {
       <GlitchOverlay active={glitchActive} onComplete={handleGlitchComplete} />
       <SecretTerminal visible={terminalOpen} onClose={() => setTerminalOpen(false)} />
 
+      {/* Mobile Konami pad */}
+      <KonamiPad onActivate={activateKonami} />
+
       {/* Ambient floating orbs */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div className="ambient-orb ambient-orb-1" />
@@ -48,7 +52,7 @@ const Index = () => {
       </div>
 
       {/* Hero Section with glow */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-10 gap-8 relative z-10">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-16 sm:pt-20 pb-10 gap-6 sm:gap-8 relative z-10">
         {/* Background glow */}
         <div className="absolute inset-0 hero-glow pointer-events-none" />
 
@@ -58,7 +62,7 @@ const Index = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-primary/40 text-primary text-sm font-medium tracking-wide">
+          <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full border border-primary/40 text-primary text-xs sm:text-sm font-medium tracking-wide">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             Universal Media Downloader
           </span>
@@ -73,12 +77,12 @@ const Index = () => {
         >
           <h1
             onClick={handleHeadlineClick}
-            className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-5 text-foreground leading-[1.05] cursor-default select-none"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-5 text-foreground leading-[1.05] cursor-default select-none"
           >
             GRAB ANY<br />
             <span className="text-primary text-glow">MEDIA</span> INSTANTLY
           </h1>
-          <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
+          <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-xl mx-auto px-2">
             Download videos and audio from YouTube, Spotify, and 1000+ platforms.
             <br />
             Maximum quality. Zero hassle.
