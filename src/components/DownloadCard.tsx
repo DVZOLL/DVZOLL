@@ -4,10 +4,13 @@ import CategoryChips from "./CategoryChips";
 import QualitySelector from "./QualitySelector";
 import PlaylistToggle from "./PlaylistToggle";
 import PlaylistProgress, { TrackStatus } from "./PlaylistProgress";
+import SingleDownloadProgress from "./SingleDownloadProgress";
+import UrlPreview from "./UrlPreview";
 import { toast } from "sonner";
-import { Link, Download, Loader2, ListMusic } from "lucide-react";
+import { Link, Download, Loader2, ListMusic, Settings } from "lucide-react";
 import { useConfetti } from "@/hooks/useConfetti";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
+import { useNavigate } from "react-router-dom";
 
 const MOCK_TRACKS = [
   "Never Gonna Give You Up",
@@ -19,22 +22,44 @@ const MOCK_TRACKS = [
   "Bad Guy",
 ];
 
+const MOCK_FILENAMES: Record<string, string> = {
+  video: "media_download.mp4",
+  audio: "media_download.mp3",
+};
+
+const MOCK_SIZES: Record<string, string> = {
+  "4K": "~2.1 GB",
+  "2K": "~1.2 GB",
+  "1080P": "~650 MB",
+  "720P": "~350 MB",
+  "FLAC": "~45 MB",
+  "AAC": "~12 MB",
+  "MP3 320": "~10 MB",
+  "WAV": "~55 MB",
+};
+
 const DownloadCard = () => {
   const [url, setUrl] = useState("");
   const [mode, setMode] = useState<"video" | "audio">("video");
-  const [quality, setQuality] = useState("1080p");
+  const [quality, setQuality] = useState("1080P");
   const [isPlaylist, setIsPlaylist] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [tracks, setTracks] = useState<TrackStatus[]>([]);
-  const [showProgress, setShowProgress] = useState(false);
+  const [showPlaylistProgress, setShowPlaylistProgress] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const fireConfetti = useConfetti();
   const { playSuccess, playRickroll } = useSoundEffects();
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
+
+  // Single download progress state
+  const [singleProgress, setSingleProgress] = useState(0);
+  const [singleStatus, setSingleStatus] = useState<"idle" | "fetching" | "downloading" | "converting" | "done" | "error">("idle");
+  const [singleFilename, setSingleFilename] = useState("");
+  const singleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleModeChange = (newMode: "video" | "audio") => {
     setMode(newMode);
-    setQuality(newMode === "video" ? "1080p" : "MP3 320");
+    setQuality(newMode === "video" ? "1080P" : "MP3 320");
   };
 
   const simulatePlaylistDownload = useCallback(() => {
@@ -45,7 +70,7 @@ const DownloadCard = () => {
       status: i === 0 ? "downloading" : "queued",
     }));
     setTracks(initialTracks);
-    setShowProgress(true);
+    setShowPlaylistProgress(true);
 
     let currentIdx = 0;
     intervalRef.current = setInterval(() => {
@@ -80,7 +105,41 @@ const DownloadCard = () => {
         return next;
       });
     }, 400);
-  }, []);
+  }, [fireConfetti, playSuccess]);
+
+  const simulateSingleDownload = useCallback(() => {
+    setSingleStatus("fetching");
+    setSingleProgress(0);
+    setSingleFilename("");
+
+    // Phase 1: Fetching (1s)
+    singleTimerRef.current = setTimeout(() => {
+      setSingleStatus("downloading");
+      setSingleFilename(MOCK_FILENAMES[mode]);
+      let progress = 0;
+
+      // Phase 2: Downloading (progress ticks)
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15 + 8);
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          setSingleProgress(100);
+          setSingleStatus("converting");
+
+          // Phase 3: Converting (0.8s)
+          setTimeout(() => {
+            setSingleStatus("done");
+            playSuccess();
+            fireConfetti();
+            toast.success("Download complete! (demo simulation)");
+          }, 800);
+        } else {
+          setSingleProgress(progress);
+        }
+      }, 300);
+    }, 1000);
+  }, [mode, fireConfetti, playSuccess]);
 
   const handleDownload = () => {
     if (!url.trim()) {
@@ -109,12 +168,8 @@ const DownloadCard = () => {
       simulatePlaylistDownload();
       setTimeout(() => setIsProcessing(false), 1500);
     } else {
-      setTimeout(() => {
-        setIsProcessing(false);
-        playSuccess();
-        fireConfetti();
-        toast.success("Download complete! (demo simulation)");
-      }, 2000);
+      simulateSingleDownload();
+      setTimeout(() => setIsProcessing(false), 1500);
     }
   };
 
@@ -123,22 +178,33 @@ const DownloadCard = () => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="w-full max-w-xl flex flex-col items-center gap-5 relative z-10"
+      className="w-full max-w-xl flex flex-col items-center gap-4 relative z-10"
     >
       {/* URL Input */}
-      <div className="relative w-full">
-        <Link className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+      <div className="relative w-full group">
+        <Link className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
         <input
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleDownload()}
           placeholder={isPlaylist ? "Paste playlist URL here..." : "Paste your media URL here..."}
-          className="w-full bg-card border border-border rounded-xl pl-12 pr-5 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all duration-300 text-base"
+          className="w-full bg-card border border-border rounded-xl pl-12 pr-14 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:box-glow transition-all duration-300 text-base"
         />
+        <button
+          onClick={() => navigate("/settings")}
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+          title="Settings"
+        >
+          <Settings className="w-4.5 h-4.5" />
+        </button>
       </div>
 
+      {/* URL Preview */}
+      <UrlPreview url={url} />
+
       {/* Mode & Playlist Row */}
-      <div className="flex flex-wrap items-center gap-4 justify-center">
+      <div className="flex flex-wrap items-center gap-3 justify-center">
         <CategoryChips mode={mode} onModeChange={handleModeChange} />
         <PlaylistToggle isPlaylist={isPlaylist} onToggle={setIsPlaylist} />
       </div>
@@ -154,6 +220,20 @@ const DownloadCard = () => {
         >
           <QualitySelector mode={mode} quality={quality} onQualityChange={setQuality} />
         </motion.div>
+      </AnimatePresence>
+
+      {/* Estimated size hint */}
+      <AnimatePresence>
+        {url && !isPlaylist && MOCK_SIZES[quality] && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-xs text-muted-foreground"
+          >
+            Estimated file size: <span className="text-foreground font-medium">{MOCK_SIZES[quality]}</span>
+          </motion.p>
+        )}
       </AnimatePresence>
 
       {/* Playlist info hint */}
@@ -177,7 +257,7 @@ const DownloadCard = () => {
         whileTap={{ scale: 0.98 }}
         onClick={handleDownload}
         disabled={isProcessing}
-        className="w-full max-w-xs bg-primary text-primary-foreground font-bold text-base uppercase tracking-widest py-4 rounded-xl hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+        className="w-full max-w-xs bg-primary text-primary-foreground font-bold text-base uppercase tracking-widest py-4 rounded-xl hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 box-glow hover:box-glow-strong"
       >
         {isProcessing ? (
           <>
@@ -192,8 +272,19 @@ const DownloadCard = () => {
         )}
       </motion.button>
 
+      {/* Single Download Progress */}
+      {!isPlaylist && (
+        <SingleDownloadProgress
+          visible={singleStatus !== "idle"}
+          progress={singleProgress}
+          status={singleStatus}
+          filename={singleFilename}
+          fileSize={MOCK_SIZES[quality]}
+        />
+      )}
+
       {/* Playlist Progress */}
-      <PlaylistProgress tracks={tracks} mode={mode} visible={showProgress} />
+      <PlaylistProgress tracks={tracks} mode={mode} visible={showPlaylistProgress} />
     </motion.div>
   );
 };
