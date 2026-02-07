@@ -15,14 +15,14 @@ const PlatformTicker = () => {
   const doubled = [...platforms, ...platforms];
 
   return (
-    <div className="w-full overflow-hidden border-y border-border py-4 bg-secondary/30">
+    <div className="w-full overflow-hidden border-y border-border py-5 md:py-6 bg-secondary/30">
       <div className="flex ticker-scroll whitespace-nowrap">
         {doubled.map((platform, i) => (
           <span
             key={i}
-            className="mx-8 text-sm font-semibold tracking-widest uppercase text-muted-foreground flex items-center gap-2"
+            className="mx-6 sm:mx-10 md:mx-14 text-xs sm:text-sm font-semibold tracking-widest uppercase text-muted-foreground flex items-center gap-2 sm:gap-3"
           >
-            <span className="text-primary">{platform.icon}</span>
+            <span className="text-primary text-sm sm:text-base">{platform.icon}</span>
             {platform.name}
           </span>
         ))}
