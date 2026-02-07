@@ -10,6 +10,11 @@ export const useKonamiCode = () => {
   const [activated, setActivated] = useState(false);
   const [sequence, setSequence] = useState<string[]>([]);
 
+  const activate = useCallback(() => {
+    playGlitch();
+    setActivated(true);
+  }, []);
+
   const reset = useCallback(() => {
     setActivated(false);
   }, []);
@@ -30,5 +35,5 @@ export const useKonamiCode = () => {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  return { activated, reset };
+  return { activated, reset, activate };
 };
