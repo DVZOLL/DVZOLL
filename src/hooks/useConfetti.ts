@@ -14,14 +14,21 @@ interface Particle {
   shape: "square" | "circle" | "line";
 }
 
-const COLORS = [
-  "hsl(152, 100%, 50%)",
-  "hsl(152, 80%, 60%)",
-  "hsl(180, 80%, 50%)",
-  "hsl(140, 90%, 45%)",
-  "hsl(0, 0%, 95%)",
-  "hsl(152, 100%, 70%)",
-];
+const getThemeColors = (): string[] => {
+  const rootStyle = getComputedStyle(document.documentElement);
+  const primary = rootStyle.getPropertyValue("--primary").trim();
+  if (!primary) {
+    return ["hsl(152, 100%, 50%)", "hsl(152, 80%, 60%)", "hsl(0, 0%, 95%)"];
+  }
+  return [
+    `hsl(${primary})`,
+    `hsl(${primary} / 0.8)`,
+    `hsl(${primary} / 0.6)`,
+    "hsl(0, 0%, 95%)",
+    `hsl(${primary} / 0.9)`,
+    `hsl(${primary} / 0.5)`,
+  ];
+};
 
 export const useConfetti = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -45,6 +52,7 @@ export const useConfetti = () => {
     const cx = originX ?? canvas.width / 2;
     const cy = originY ?? canvas.height / 2;
 
+    const colors = getThemeColors();
     const particles: Particle[] = [];
     for (let i = 0; i < 80; i++) {
       const angle = Math.random() * Math.PI * 2;
@@ -55,7 +63,7 @@ export const useConfetti = () => {
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed - 3,
         size: Math.random() * 6 + 3,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        color: colors[Math.floor(Math.random() * colors.length)],
         rotation: Math.random() * 360,
         rotationSpeed: (Math.random() - 0.5) * 10,
         life: 0,
