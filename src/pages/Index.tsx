@@ -10,6 +10,7 @@ import SecretTerminal from "@/components/SecretTerminal";
 import KonamiPad from "@/components/KonamiPad";
 import { useKonamiCode } from "@/hooks/useKonamiCode";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
+import logo from "@/assets/logo.png";
 
 const Index = () => {
   const { activated: konamiActive, reset: resetKonami, activate: activateKonami } = useKonamiCode();
@@ -65,7 +66,7 @@ const Index = () => {
           transition={{ duration: 0.4 }}
         >
           <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full border border-primary/40 text-primary text-xs sm:text-sm font-medium tracking-wide">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <img src={logo} alt="DVZOLL" className="w-5 h-5 rounded" />
             Universal Media Downloader
           </span>
         </motion.div>
