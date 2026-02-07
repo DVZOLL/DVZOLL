@@ -36,7 +36,7 @@ const FeatureGrid = () => {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-3">
-            WHY <span className="text-primary">GRABIFY</span>?
+            WHY <span className="text-primary">DVZOLL</span>?
           </h2>
           <p className="text-muted-foreground text-base">
             Built for speed, privacy, and the best possible quality
