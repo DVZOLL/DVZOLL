@@ -1,10 +1,21 @@
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CategoryChips from "./CategoryChips";
 import QualitySelector from "./QualitySelector";
 import PlaylistToggle from "./PlaylistToggle";
+import PlaylistProgress, { TrackStatus } from "./PlaylistProgress";
 import { toast } from "sonner";
 import { Link, Download, Loader2, ListMusic } from "lucide-react";
+
+const MOCK_TRACKS = [
+  "Never Gonna Give You Up",
+  "Bohemian Rhapsody",
+  "Blinding Lights",
+  "Levitating",
+  "Shape of You",
+  "Watermelon Sugar",
+  "Bad Guy",
+];
 
 const DownloadCard = () => {
   const [url, setUrl] = useState("");
@@ -12,11 +23,57 @@ const DownloadCard = () => {
   const [quality, setQuality] = useState("1080p");
   const [isPlaylist, setIsPlaylist] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [tracks, setTracks] = useState<TrackStatus[]>([]);
+  const [showProgress, setShowProgress] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleModeChange = (newMode: "video" | "audio") => {
     setMode(newMode);
     setQuality(newMode === "video" ? "1080p" : "MP3 320");
   };
+
+  const simulatePlaylistDownload = useCallback(() => {
+    const initialTracks: TrackStatus[] = MOCK_TRACKS.map((title, i) => ({
+      id: i,
+      title,
+      progress: 0,
+      status: i === 0 ? "downloading" : "queued",
+    }));
+    setTracks(initialTracks);
+    setShowProgress(true);
+
+    let currentIdx = 0;
+    intervalRef.current = setInterval(() => {
+      setTracks((prev) => {
+        const next = [...prev];
+        const current = next[currentIdx];
+        if (!current) {
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          return prev;
+        }
+
+        if (current.progress < 100) {
+          next[currentIdx] = {
+            ...current,
+            progress: Math.min(current.progress + Math.floor(Math.random() * 20 + 10), 100),
+            status: "downloading",
+          };
+        }
+
+        if (next[currentIdx].progress >= 100) {
+          next[currentIdx] = { ...next[currentIdx], status: "done", progress: 100 };
+          currentIdx++;
+          if (currentIdx < next.length) {
+            next[currentIdx] = { ...next[currentIdx], status: "downloading" };
+          } else {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+            toast.info("Backend not connected. This was a demo simulation.");
+          }
+        }
+        return next;
+      });
+    }, 400);
+  }, []);
 
   const handleDownload = () => {
     if (!url.trim()) {
@@ -24,11 +81,16 @@ const DownloadCard = () => {
       return;
     }
     setIsProcessing(true);
-    const downloadType = isPlaylist ? "playlist" : "single";
-    setTimeout(() => {
-      setIsProcessing(false);
-      toast.info(`Backend not connected. Connect an API to enable ${downloadType} downloads.`);
-    }, 2000);
+
+    if (isPlaylist) {
+      simulatePlaylistDownload();
+      setTimeout(() => setIsProcessing(false), 1500);
+    } else {
+      setTimeout(() => {
+        setIsProcessing(false);
+        toast.info("Backend not connected. Connect an API to enable downloads.");
+      }, 2000);
+    }
   };
 
   return (
@@ -104,6 +166,9 @@ const DownloadCard = () => {
           </>
         )}
       </motion.button>
+
+      {/* Playlist Progress */}
+      <PlaylistProgress tracks={tracks} mode={mode} visible={showProgress} />
     </motion.div>
   );
 };

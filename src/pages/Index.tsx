@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import PlatformTicker from "@/components/PlatformTicker";
 import DownloadCard from "@/components/DownloadCard";
 import FeatureGrid from "@/components/FeatureGrid";
+import AboutSection from "@/components/AboutSection";
 
 const Index = () => {
   return (
@@ -57,6 +58,9 @@ const Index = () => {
 
       {/* Features Section */}
       <FeatureGrid />
+
+      {/* About & Story */}
+      <AboutSection />
 
       {/* Footer */}
       <footer className="w-full px-6 py-8 border-t border-border text-center space-y-2 relative z-10">
