@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useThemeContext";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
+import DemoBanner from "@/components/DemoBanner";
 import Index from "./pages/Index";
 import DevTerminal from "./pages/DevTerminal";
 import Settings from "./pages/Settings";
@@ -19,6 +20,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <ThemeSwitcher />
+        <DemoBanner />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
