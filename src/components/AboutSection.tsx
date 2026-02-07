@@ -40,29 +40,14 @@ const AboutSection = ({ onAvatarSecret }: AboutSectionProps) => {
 
           <div className="bg-card border border-border rounded-xl p-6 md:p-8 space-y-4 text-muted-foreground leading-relaxed">
             <p>
-              It all started at 2 AM on a Tuesday. I just wanted to download <em>one</em> song. 
-              Simple, right? <span className="text-foreground font-medium">Wrong.</span>
+              2 AM. One song to download. Twelve sketchy sites later — pop-ups, fake iPhone wins, 
+              a file called <code className="text-primary bg-primary/10 px-1.5 py-0.5 rounded text-sm">totally_not_a_virus.mp3.exe</code>, 
+              and audio that sounded like a washing machine underwater.
             </p>
             <p>
-              The first site gave me 47 pop-ups and tried to convince me I'd won an iPhone 15. 
-              The second one downloaded a file called <code className="text-primary bg-primary/10 px-1.5 py-0.5 rounded text-sm">totally_not_a_virus.mp3.exe</code>. 
-              The third one actually worked… but the audio quality sounded like it was recorded 
-              inside a washing machine. During a spin cycle. Underwater.
-            </p>
-            <p>
-              By site number twelve, I was questioning my life choices. My browser had more tabs open 
-              than a bar on New Year's Eve. My antivirus was sending me concerned emails. I'm pretty 
-              sure one site tried to mine Bitcoin using my toaster.
-            </p>
-            <p>
-              That's when it hit me: <span className="text-foreground font-medium">
-              "Why is downloading media in 2026 still harder than explaining crypto to your grandma?"</span>
-            </p>
-            <p>
-              So I did what any reasonable, sleep-deprived developer would do — I built my own. 
-              No pop-ups. No sketchy executables. No washing-machine audio. Just clean, fast, 
-              maximum-quality downloads. And that, my friends, is how <span className="text-primary font-bold">DVZOLL</span> was born. 
-              From frustration, caffeine, and a dream of downloading music without getting a computer virus.
+              <span className="text-foreground font-medium">"Why is this still so hard in 2026?"</span> — So I built my own. 
+              No pop-ups. No sketchy executables. Just clean, fast, maximum-quality downloads. 
+              That's how <span className="text-primary font-bold">DVZOLL</span> was born.
             </p>
           </div>
         </motion.div>
