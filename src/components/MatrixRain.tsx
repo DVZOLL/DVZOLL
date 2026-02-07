@@ -21,6 +21,11 @@ const MatrixRain = ({ onComplete }: MatrixRainProps) => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    // Read the current --primary CSS variable and convert to usable color
+    const rootStyle = getComputedStyle(document.documentElement);
+    const primaryHSL = rootStyle.getPropertyValue("--primary").trim();
+    const rainColor = primaryHSL ? `hsl(${primaryHSL})` : "hsl(152, 100%, 50%)";
+
     const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
     const drops = Array(columns).fill(1);
@@ -29,7 +34,7 @@ const MatrixRain = ({ onComplete }: MatrixRainProps) => {
       ctx.fillStyle = "rgba(10, 20, 15, 0.06)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = "hsl(152, 100%, 50%)";
+      ctx.fillStyle = rainColor;
       ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {
