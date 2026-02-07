@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PlatformTicker from "@/components/PlatformTicker";
 import DownloadCard from "@/components/DownloadCard";
@@ -17,6 +17,8 @@ const Index = () => {
   const [glitchActive, setGlitchActive] = useState(false);
   const [headlineClicks, setHeadlineClicks] = useState(0);
   const [terminalOpen, setTerminalOpen] = useState(false);
+  const [konamiPadOpen, setKonamiPadOpen] = useState(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleHeadlineClick = () => {
     const next = headlineClicks + 1;
@@ -41,8 +43,8 @@ const Index = () => {
       <GlitchOverlay active={glitchActive} onComplete={handleGlitchComplete} />
       <SecretTerminal visible={terminalOpen} onClose={() => setTerminalOpen(false)} />
 
-      {/* Mobile Konami pad */}
-      <KonamiPad onActivate={activateKonami} />
+      {/* Mobile Konami pad — opened via long-press on ⚡ */}
+      <KonamiPad open={konamiPadOpen} onClose={() => setKonamiPadOpen(false)} onActivate={activateKonami} />
 
       {/* Ambient floating orbs */}
       <div className="pointer-events-none fixed inset-0 z-0">
@@ -105,10 +107,21 @@ const Index = () => {
       {/* Footer — hover the ⚡ to reveal secret */}
       <footer className="w-full px-6 py-8 border-t border-border text-center space-y-2 relative z-10">
         <p className="text-sm text-muted-foreground group">
-          <span className="relative inline-block cursor-default">
+          <span
+            className="relative inline-block cursor-default select-none"
+            onTouchStart={() => {
+              longPressTimer.current = setTimeout(() => setKonamiPadOpen(true), 800);
+            }}
+            onTouchEnd={() => {
+              if (longPressTimer.current) clearTimeout(longPressTimer.current);
+            }}
+            onTouchMove={() => {
+              if (longPressTimer.current) clearTimeout(longPressTimer.current);
+            }}
+          >
             ⚡
             <span className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] text-primary whitespace-nowrap bg-card border border-primary/30 px-2 py-1 rounded pointer-events-none">
-              try ↑↑↓↓←→←→BA 👀
+              hold for secrets 👀
             </span>
           </span>{" "}
           Powered by yt-dlp • spotdl • librespot
