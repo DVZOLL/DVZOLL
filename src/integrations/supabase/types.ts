@@ -14,7 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      download_history: {
+        Row: {
+          created_at: string
+          download_url: string | null
+          error_message: string | null
+          id: string
+          is_playlist: boolean
+          mode: string
+          platform: string | null
+          quality: string
+          status: string
+          title: string | null
+          track_count: number | null
+          updated_at: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          download_url?: string | null
+          error_message?: string | null
+          id?: string
+          is_playlist?: boolean
+          mode: string
+          platform?: string | null
+          quality: string
+          status?: string
+          title?: string | null
+          track_count?: number | null
+          updated_at?: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          download_url?: string | null
+          error_message?: string | null
+          id?: string
+          is_playlist?: boolean
+          mode?: string
+          platform?: string | null
+          quality?: string
+          status?: string
+          title?: string | null
+          track_count?: number | null
+          updated_at?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
