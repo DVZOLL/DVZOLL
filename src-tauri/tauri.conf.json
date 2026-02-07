@@ -1,0 +1,93 @@
+{
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devPath": "http://localhost:8080",
+    "distDir": "../dist"
+  },
+  "package": {
+    "productName": "DVZOLL",
+    "version": "1.0.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "all": false,
+        "open": true,
+        "execute": false,
+        "sidecar": true,
+        "scope": [
+          {
+            "name": "yt-dlp",
+            "cmd": "yt-dlp",
+            "args": true
+          },
+          {
+            "name": "spotdl",
+            "cmd": "spotdl",
+            "args": true
+          },
+          {
+            "name": "ffmpeg",
+            "cmd": "ffmpeg",
+            "args": true
+          }
+        ]
+      },
+      "fs": {
+        "all": false,
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "createDir": true,
+        "exists": true,
+        "scope": ["$DOWNLOAD/**", "$HOME/DVZOLL/**"]
+      },
+      "path": {
+        "all": true
+      },
+      "dialog": {
+        "all": true
+      },
+      "notification": {
+        "all": true
+      }
+    },
+    "bundle": {
+      "active": true,
+      "identifier": "app.dvzoll.downloader",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "targets": "all",
+      "macOS": {
+        "minimumSystemVersion": "10.15",
+        "signingIdentity": null,
+        "entitlements": null
+      },
+      "windows": {
+        "wix": null,
+        "nsis": null
+      }
+    },
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": true,
+        "title": "DVZOLL — Universal Media Downloader",
+        "width": 1100,
+        "height": 750,
+        "minWidth": 800,
+        "minHeight": 600
+      }
+    ]
+  }
+}
