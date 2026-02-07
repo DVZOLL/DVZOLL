@@ -88,6 +88,16 @@
 
   .hero-glow {
     background: radial-gradient(ellipse 600px 400px at center top, hsl(152 100% 50% / 0.12), transparent 70%);
+    animation: hero-pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes hero-pulse {
+    0%, 100% {
+      background: radial-gradient(ellipse 600px 400px at center top, hsl(152 100% 50% / 0.10), transparent 70%);
+    }
+    50% {
+      background: radial-gradient(ellipse 700px 450px at center top, hsl(152 100% 50% / 0.18), transparent 70%);
+    }
   }
 
   .ticker-scroll {
