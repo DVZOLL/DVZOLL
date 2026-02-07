@@ -80,6 +80,21 @@ const DownloadCard = () => {
       toast.error("Please paste a valid URL");
       return;
     }
+
+    // 🥚 Rickroll easter egg
+    const rickrollPatterns = ["dQw4w9WgXcQ", "rickroll", "never gonna give you up", "rick astley"];
+    if (rickrollPatterns.some((p) => url.toLowerCase().includes(p.toLowerCase()))) {
+      setIsProcessing(true);
+      setTimeout(() => {
+        setIsProcessing(false);
+        toast("🎵 Never Gonna Give You Up!", {
+          description: "You just got rick-rolled by a download manager. Respect.",
+          duration: 5000,
+        });
+      }, 1500);
+      return;
+    }
+
     setIsProcessing(true);
 
     if (isPlaylist) {

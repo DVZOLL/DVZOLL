@@ -1,12 +1,42 @@
-import { motion } from "framer-motion";
+import { useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import PlatformTicker from "@/components/PlatformTicker";
 import DownloadCard from "@/components/DownloadCard";
 import FeatureGrid from "@/components/FeatureGrid";
 import AboutSection from "@/components/AboutSection";
+import MatrixRain from "@/components/MatrixRain";
+import GlitchOverlay from "@/components/GlitchOverlay";
+import SecretTerminal from "@/components/SecretTerminal";
+import { useKonamiCode } from "@/hooks/useKonamiCode";
 
 const Index = () => {
+  const { activated: konamiActive, reset: resetKonami } = useKonamiCode();
+  const [glitchActive, setGlitchActive] = useState(false);
+  const [headlineClicks, setHeadlineClicks] = useState(0);
+  const [terminalOpen, setTerminalOpen] = useState(false);
+
+  const handleHeadlineClick = () => {
+    const next = headlineClicks + 1;
+    setHeadlineClicks(next);
+    if (next >= 7) {
+      setGlitchActive(true);
+      setHeadlineClicks(0);
+    }
+  };
+
+  const handleGlitchComplete = useCallback(() => {
+    setGlitchActive(false);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+      {/* Easter egg overlays */}
+      <AnimatePresence>
+        {konamiActive && <MatrixRain onComplete={resetKonami} />}
+      </AnimatePresence>
+      <GlitchOverlay active={glitchActive} onComplete={handleGlitchComplete} />
+      <SecretTerminal visible={terminalOpen} onClose={() => setTerminalOpen(false)} />
+
       {/* Ambient floating orbs */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div className="ambient-orb ambient-orb-1" />
@@ -31,14 +61,17 @@ const Index = () => {
           </span>
         </motion.div>
 
-        {/* Headline */}
+        {/* Headline — click 7x for glitch */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-center max-w-4xl relative z-10"
         >
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-5 text-foreground leading-[1.05]">
+          <h1
+            onClick={handleHeadlineClick}
+            className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-5 text-foreground leading-[1.05] cursor-default select-none"
+          >
             GRAB ANY<br />
             <span className="text-primary text-glow">MEDIA</span> INSTANTLY
           </h1>
@@ -60,12 +93,18 @@ const Index = () => {
       <FeatureGrid />
 
       {/* About & Story */}
-      <AboutSection />
+      <AboutSection onAvatarSecret={() => setTerminalOpen(true)} />
 
-      {/* Footer */}
+      {/* Footer — hover the ⚡ to reveal secret */}
       <footer className="w-full px-6 py-8 border-t border-border text-center space-y-2 relative z-10">
-        <p className="text-sm text-muted-foreground">
-          ⚡ Powered by yt-dlp • spotdl • librespot
+        <p className="text-sm text-muted-foreground group">
+          <span className="relative inline-block cursor-default">
+            ⚡
+            <span className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] text-primary whitespace-nowrap bg-card border border-primary/30 px-2 py-1 rounded pointer-events-none">
+              try ↑↑↓↓←→←→BA 👀
+            </span>
+          </span>{" "}
+          Powered by yt-dlp • spotdl • librespot
         </p>
         <p className="text-xs text-muted-foreground">
           For educational purposes only. Respect copyright and terms of service.
