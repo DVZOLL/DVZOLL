@@ -1,7 +1,23 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, Code2, Rocket, Heart } from "lucide-react";
 
-const AboutSection = () => {
+interface AboutSectionProps {
+  onAvatarSecret?: () => void;
+}
+
+const AboutSection = ({ onAvatarSecret }: AboutSectionProps) => {
+  const [avatarClicks, setAvatarClicks] = useState(0);
+
+  const handleAvatarClick = () => {
+    const next = avatarClicks + 1;
+    setAvatarClicks(next);
+    if (next >= 5 && onAvatarSecret) {
+      onAvatarSecret();
+      setAvatarClicks(0);
+    }
+  };
+
   return (
     <section className="w-full px-6 py-20 relative z-10">
       <div className="max-w-4xl mx-auto space-y-16">
@@ -70,10 +86,15 @@ const AboutSection = () => {
 
           <div className="bg-card border border-border rounded-xl p-6 md:p-8">
             <div className="flex flex-col md:flex-row gap-6 items-start">
-              {/* Avatar placeholder */}
-              <div className="w-20 h-20 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+              {/* Avatar — click 5x for secret terminal */}
+              <motion.div
+                whileTap={{ scale: 0.9 }}
+                onClick={handleAvatarClick}
+                className="w-20 h-20 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 cursor-pointer select-none hover:border-primary/40 transition-colors"
+                title="..."
+              >
                 <span className="text-3xl font-extrabold text-primary">DZ</span>
-              </div>
+              </motion.div>
 
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
