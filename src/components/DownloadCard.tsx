@@ -2,13 +2,15 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CategoryChips from "./CategoryChips";
 import QualitySelector from "./QualitySelector";
+import PlaylistToggle from "./PlaylistToggle";
 import { toast } from "sonner";
-import { Link, Download, Loader2 } from "lucide-react";
+import { Link, Download, Loader2, ListMusic } from "lucide-react";
 
 const DownloadCard = () => {
   const [url, setUrl] = useState("");
   const [mode, setMode] = useState<"video" | "audio">("video");
   const [quality, setQuality] = useState("1080p");
+  const [isPlaylist, setIsPlaylist] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleModeChange = (newMode: "video" | "audio") => {
@@ -22,9 +24,10 @@ const DownloadCard = () => {
       return;
     }
     setIsProcessing(true);
+    const downloadType = isPlaylist ? "playlist" : "single";
     setTimeout(() => {
       setIsProcessing(false);
-      toast.info("Backend not connected. Connect an API to enable downloads.");
+      toast.info(`Backend not connected. Connect an API to enable ${downloadType} downloads.`);
     }, 2000);
   };
 
@@ -42,13 +45,16 @@ const DownloadCard = () => {
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          placeholder="Paste your media URL here..."
+          placeholder={isPlaylist ? "Paste playlist URL here..." : "Paste your media URL here..."}
           className="w-full bg-card border border-border rounded-xl pl-12 pr-5 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all duration-300 text-base"
         />
       </div>
 
-      {/* Mode Selector */}
-      <CategoryChips mode={mode} onModeChange={handleModeChange} />
+      {/* Mode & Playlist Row */}
+      <div className="flex flex-wrap items-center gap-4 justify-center">
+        <CategoryChips mode={mode} onModeChange={handleModeChange} />
+        <PlaylistToggle isPlaylist={isPlaylist} onToggle={setIsPlaylist} />
+      </div>
 
       {/* Quality */}
       <AnimatePresence mode="wait">
@@ -61,6 +67,21 @@ const DownloadCard = () => {
         >
           <QualitySelector mode={mode} quality={quality} onQualityChange={setQuality} />
         </motion.div>
+      </AnimatePresence>
+
+      {/* Playlist info hint */}
+      <AnimatePresence>
+        {isPlaylist && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="flex items-center gap-2 text-xs text-primary/80"
+          >
+            <ListMusic className="w-4 h-4" />
+            <span>All tracks in the playlist will be downloaded in {quality} quality</span>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* CTA Button */}
@@ -78,8 +99,8 @@ const DownloadCard = () => {
           </>
         ) : (
           <>
-            <Download className="w-5 h-5" />
-            Download
+            {isPlaylist ? <ListMusic className="w-5 h-5" /> : <Download className="w-5 h-5" />}
+            {isPlaylist ? "Download Playlist" : "Download"}
           </>
         )}
       </motion.button>
