@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, Code2, Rocket, Heart } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 interface AboutSectionProps {
   onAvatarSecret?: () => void;
@@ -75,10 +76,10 @@ const AboutSection = ({ onAvatarSecret }: AboutSectionProps) => {
               <motion.div
                 whileTap={{ scale: 0.9 }}
                 onClick={handleAvatarClick}
-                className="w-20 h-20 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 cursor-pointer select-none hover:border-primary/40 transition-colors"
+                className="w-20 h-20 rounded-xl overflow-hidden shrink-0 cursor-pointer select-none hover:ring-2 hover:ring-primary/40 transition-all"
                 title="..."
               >
-                <span className="text-3xl font-extrabold text-primary">DZ</span>
+                <img src={logo} alt="DZ" className="w-full h-full object-cover" />
               </motion.div>
 
               <div className="space-y-4 text-muted-foreground leading-relaxed">
