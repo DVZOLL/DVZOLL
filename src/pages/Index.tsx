@@ -8,9 +8,11 @@ import MatrixRain from "@/components/MatrixRain";
 import GlitchOverlay from "@/components/GlitchOverlay";
 import SecretTerminal from "@/components/SecretTerminal";
 import { useKonamiCode } from "@/hooks/useKonamiCode";
+import { useSoundEffects } from "@/hooks/useSoundEffects";
 
 const Index = () => {
   const { activated: konamiActive, reset: resetKonami } = useKonamiCode();
+  const { playGlitch, playTerminalBoot } = useSoundEffects();
   const [glitchActive, setGlitchActive] = useState(false);
   const [headlineClicks, setHeadlineClicks] = useState(0);
   const [terminalOpen, setTerminalOpen] = useState(false);
@@ -19,6 +21,7 @@ const Index = () => {
     const next = headlineClicks + 1;
     setHeadlineClicks(next);
     if (next >= 7) {
+      playGlitch();
       setGlitchActive(true);
       setHeadlineClicks(0);
     }
@@ -93,7 +96,7 @@ const Index = () => {
       <FeatureGrid />
 
       {/* About & Story */}
-      <AboutSection onAvatarSecret={() => setTerminalOpen(true)} />
+      <AboutSection onAvatarSecret={() => { playTerminalBoot(); setTerminalOpen(true); }} />
 
       {/* Footer — hover the ⚡ to reveal secret */}
       <footer className="w-full px-6 py-8 border-t border-border text-center space-y-2 relative z-10">

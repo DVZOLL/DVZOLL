@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useTheme } from "@/hooks/useThemeContext";
 import { Palette } from "lucide-react";
+import { playThemeSwitch } from "@/hooks/useSoundEffects";
 
 const ThemeSwitcher = () => {
   const { theme, setTheme, themes } = useTheme();
@@ -35,6 +36,7 @@ const ThemeSwitcher = () => {
                 key={t.name}
                 onClick={() => {
                   setTheme(t.name);
+                  playThemeSwitch();
                   setOpen(false);
                 }}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
