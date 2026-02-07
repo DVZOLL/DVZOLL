@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CategoryChips from "./CategoryChips";
 import QualitySelector from "./QualitySelector";
 import { toast } from "sonner";
+import { Link, Download, Loader2 } from "lucide-react";
 
 const DownloadCard = () => {
   const [url, setUrl] = useState("");
@@ -21,7 +22,6 @@ const DownloadCard = () => {
       return;
     }
     setIsProcessing(true);
-    // Simulate processing
     setTimeout(() => {
       setIsProcessing(false);
       toast.info("Backend not connected. Connect an API to enable downloads.");
@@ -33,47 +33,35 @@ const DownloadCard = () => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="w-full max-w-2xl bg-card border border-border rounded-2xl p-8 box-glow"
+      className="w-full max-w-xl flex flex-col items-center gap-5 relative z-10"
     >
       {/* URL Input */}
-      <div className="relative mb-6">
+      <div className="relative w-full">
+        <Link className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
         <input
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          placeholder="Paste your link here..."
-          className="w-full bg-input border border-border rounded-xl px-5 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:box-glow transition-all duration-300 text-base"
+          placeholder="Paste your media URL here..."
+          className="w-full bg-card border border-border rounded-xl pl-12 pr-5 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all duration-300 text-base"
         />
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs font-medium uppercase tracking-wider">
-          URL
-        </div>
       </div>
 
       {/* Mode Selector */}
-      <div className="mb-6">
-        <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">
-          Download Mode
-        </label>
-        <CategoryChips mode={mode} onModeChange={handleModeChange} />
-      </div>
+      <CategoryChips mode={mode} onModeChange={handleModeChange} />
 
       {/* Quality */}
-      <div className="mb-8">
-        <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">
-          Quality
-        </label>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={mode}
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 10 }}
-            transition={{ duration: 0.2 }}
-          >
-            <QualitySelector mode={mode} quality={quality} onQualityChange={setQuality} />
-          </motion.div>
-        </AnimatePresence>
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={mode}
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 10 }}
+          transition={{ duration: 0.2 }}
+        >
+          <QualitySelector mode={mode} quality={quality} onQualityChange={setQuality} />
+        </motion.div>
+      </AnimatePresence>
 
       {/* CTA Button */}
       <motion.button
@@ -81,19 +69,18 @@ const DownloadCard = () => {
         whileTap={{ scale: 0.98 }}
         onClick={handleDownload}
         disabled={isProcessing}
-        className="w-full gradient-primary text-primary-foreground font-bold text-lg uppercase tracking-widest py-4 rounded-xl animate-pulse-glow hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full max-w-xs bg-primary text-primary-foreground font-bold text-base uppercase tracking-widest py-4 rounded-xl hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
       >
         {isProcessing ? (
-          <span className="flex items-center justify-center gap-3">
-            <motion.span
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              className="inline-block w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
-            />
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
             Processing...
-          </span>
+          </>
         ) : (
-          "⬇ Download Now"
+          <>
+            <Download className="w-5 h-5" />
+            Download
+          </>
         )}
       </motion.button>
     </motion.div>
