@@ -6,6 +6,7 @@ import PlaylistToggle from "./PlaylistToggle";
 import PlaylistProgress, { TrackStatus } from "./PlaylistProgress";
 import { toast } from "sonner";
 import { Link, Download, Loader2, ListMusic } from "lucide-react";
+import { useConfetti } from "@/hooks/useConfetti";
 
 const MOCK_TRACKS = [
   "Never Gonna Give You Up",
@@ -26,6 +27,8 @@ const DownloadCard = () => {
   const [tracks, setTracks] = useState<TrackStatus[]>([]);
   const [showProgress, setShowProgress] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const fireConfetti = useConfetti();
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleModeChange = (newMode: "video" | "audio") => {
     setMode(newMode);
@@ -67,7 +70,8 @@ const DownloadCard = () => {
             next[currentIdx] = { ...next[currentIdx], status: "downloading" };
           } else {
             if (intervalRef.current) clearInterval(intervalRef.current);
-            toast.info("Backend not connected. This was a demo simulation.");
+            fireConfetti();
+            toast.success("Playlist download complete! (demo simulation)");
           }
         }
         return next;
@@ -103,7 +107,8 @@ const DownloadCard = () => {
     } else {
       setTimeout(() => {
         setIsProcessing(false);
-        toast.info("Backend not connected. Connect an API to enable downloads.");
+        fireConfetti();
+        toast.success("Download complete! (demo simulation)");
       }, 2000);
     }
   };

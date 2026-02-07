@@ -64,30 +64,30 @@
 
 @layer utilities {
   .text-glow {
-    text-shadow: 0 0 30px hsl(152 100% 50% / 0.6), 0 0 60px hsl(152 100% 50% / 0.3);
+    text-shadow: 0 0 30px hsl(var(--primary) / 0.6), 0 0 60px hsl(var(--primary) / 0.3);
   }
 
   .box-glow {
-    box-shadow: 0 0 20px hsl(152 100% 50% / 0.15), 0 0 40px hsl(152 100% 50% / 0.05);
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.15), 0 0 40px hsl(var(--primary) / 0.05);
   }
 
   .box-glow-strong {
-    box-shadow: 0 0 30px hsl(152 100% 50% / 0.3), 0 0 60px hsl(152 100% 50% / 0.1);
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.3), 0 0 60px hsl(var(--primary) / 0.1);
   }
 
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(152 100% 45%), hsl(152 100% 40%));
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.85));
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, hsl(152 100% 50%), hsl(152 80% 55%));
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.7));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .hero-glow {
-    background: radial-gradient(ellipse 600px 400px at center top, hsl(152 100% 50% / 0.12), transparent 70%);
+    background: radial-gradient(ellipse 600px 400px at center top, hsl(var(--primary) / 0.12), transparent 70%);
   }
 
   .ticker-scroll {
@@ -100,8 +100,8 @@
   }
 
   @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 20px hsl(152 100% 50% / 0.2); }
-    50% { box-shadow: 0 0 40px hsl(152 100% 50% / 0.4), 0 0 60px hsl(152 100% 50% / 0.1); }
+    0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.2); }
+    50% { box-shadow: 0 0 40px hsl(var(--primary) / 0.4), 0 0 60px hsl(var(--primary) / 0.1); }
   }
 
   .animate-pulse-glow {
@@ -118,7 +118,7 @@
   .ambient-orb-1 {
     width: 500px;
     height: 500px;
-    background: hsl(152 100% 50%);
+    background: hsl(var(--primary));
     top: -10%;
     left: -10%;
     animation: float-1 18s ease-in-out infinite;
@@ -127,7 +127,7 @@
   .ambient-orb-2 {
     width: 400px;
     height: 400px;
-    background: hsl(180 80% 45%);
+    background: hsl(var(--primary) / 0.8);
     bottom: 10%;
     right: -8%;
     animation: float-2 22s ease-in-out infinite;
@@ -136,7 +136,7 @@
   .ambient-orb-3 {
     width: 300px;
     height: 300px;
-    background: hsl(140 90% 40%);
+    background: hsl(var(--primary) / 0.6);
     top: 50%;
     left: 40%;
     animation: float-3 15s ease-in-out infinite;
