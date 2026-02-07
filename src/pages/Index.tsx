@@ -5,9 +5,16 @@ import FeatureGrid from "@/components/FeatureGrid";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+      {/* Ambient floating orbs */}
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <div className="ambient-orb ambient-orb-1" />
+        <div className="ambient-orb ambient-orb-2" />
+        <div className="ambient-orb ambient-orb-3" />
+      </div>
+
       {/* Hero Section with glow */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-10 gap-8 relative">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-10 gap-8 relative z-10">
         {/* Background glow */}
         <div className="absolute inset-0 hero-glow pointer-events-none" />
 
@@ -52,7 +59,7 @@ const Index = () => {
       <FeatureGrid />
 
       {/* Footer */}
-      <footer className="w-full px-6 py-8 border-t border-border text-center space-y-2">
+      <footer className="w-full px-6 py-8 border-t border-border text-center space-y-2 relative z-10">
         <p className="text-sm text-muted-foreground">
           ⚡ Powered by yt-dlp • spotdl • librespot
         </p>
