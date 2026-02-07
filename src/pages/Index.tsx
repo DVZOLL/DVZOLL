@@ -1,20 +1,10 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
 import PlatformTicker from "@/components/PlatformTicker";
 import DownloadCard from "@/components/DownloadCard";
 import FeatureGrid from "@/components/FeatureGrid";
 import AboutSection from "@/components/AboutSection";
-import { LogIn, LogOut, User } from "lucide-react";
 
 const Index = () => {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    await signOut();
-  };
-
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
       {/* Ambient floating orbs */}
@@ -24,35 +14,8 @@ const Index = () => {
         <div className="ambient-orb ambient-orb-3" />
       </div>
 
-      {/* Top bar */}
-      <header className="w-full flex items-center justify-end px-6 py-4 relative z-20">
-        {user ? (
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-              <User className="w-3.5 h-3.5" />
-              {user.email}
-            </span>
-            <button
-              onClick={handleSignOut}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Sign Out
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => navigate("/auth")}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-primary/40 text-sm text-primary font-medium hover:bg-primary/10 transition-colors"
-          >
-            <LogIn className="w-4 h-4" />
-            Sign In
-          </button>
-        )}
-      </header>
-
       {/* Hero Section with glow */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 pt-10 pb-10 gap-8 relative z-10">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-10 gap-8 relative z-10">
         {/* Background glow */}
         <div className="absolute inset-0 hero-glow pointer-events-none" />
 

@@ -1,14 +1,11 @@
 import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import CategoryChips from "./CategoryChips";
 import QualitySelector from "./QualitySelector";
 import PlaylistToggle from "./PlaylistToggle";
 import PlaylistProgress, { TrackStatus } from "./PlaylistProgress";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Link, Download, Loader2, ListMusic, LogIn } from "lucide-react";
+import { Link, Download, Loader2, ListMusic } from "lucide-react";
 
 const MOCK_TRACKS = [
   "Never Gonna Give You Up",
@@ -29,8 +26,6 @@ const DownloadCard = () => {
   const [tracks, setTracks] = useState<TrackStatus[]>([]);
   const [showProgress, setShowProgress] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const { user } = useAuth();
-  const navigate = useNavigate();
 
   const handleModeChange = (newMode: "video" | "audio") => {
     setMode(newMode);
@@ -72,7 +67,7 @@ const DownloadCard = () => {
             next[currentIdx] = { ...next[currentIdx], status: "downloading" };
           } else {
             if (intervalRef.current) clearInterval(intervalRef.current);
-            toast.success("Playlist download complete! (demo)");
+            toast.info("Backend not connected. This was a demo simulation.");
           }
         }
         return next;
@@ -80,42 +75,21 @@ const DownloadCard = () => {
     }, 400);
   }, []);
 
-  const handleDownload = async () => {
+  const handleDownload = () => {
     if (!url.trim()) {
       toast.error("Please paste a valid URL");
       return;
     }
-
-    if (!user) {
-      toast.error("Please sign in to download");
-      navigate("/auth");
-      return;
-    }
-
     setIsProcessing(true);
 
-    try {
-      const { data, error } = await supabase.functions.invoke("process-download", {
-        body: {
-          url,
-          mode,
-          quality,
-          is_playlist: isPlaylist,
-          track_count: isPlaylist ? MOCK_TRACKS.length : 1,
-        },
-      });
-
-      if (error) throw error;
-
-      toast.success("Download request logged!");
-
-      if (isPlaylist) {
-        simulatePlaylistDownload();
-      }
-    } catch (err: any) {
-      toast.error(err?.message || "Download request failed");
-    } finally {
-      setTimeout(() => setIsProcessing(false), isPlaylist ? 1500 : 500);
+    if (isPlaylist) {
+      simulatePlaylistDownload();
+      setTimeout(() => setIsProcessing(false), 1500);
+    } else {
+      setTimeout(() => {
+        setIsProcessing(false);
+        toast.info("Backend not connected. Connect an API to enable downloads.");
+      }, 2000);
     }
   };
 
@@ -184,11 +158,6 @@ const DownloadCard = () => {
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
             Processing...
-          </>
-        ) : !user ? (
-          <>
-            <LogIn className="w-5 h-5" />
-            Sign in to Download
           </>
         ) : (
           <>
