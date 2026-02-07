@@ -5,7 +5,17 @@ import QualitySelector from "./QualitySelector";
 import PlaylistToggle from "./PlaylistToggle";
 import PlaylistProgress, { TrackStatus } from "./PlaylistProgress";
 import { toast } from "sonner";
-import { Link, Download, Loader2, ListMusic } from "lucide-react";
+import { Link, Download, Loader2, ListMusic, ExternalLink } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface DownloadResult {
+  title: string;
+  author: string;
+  thumbnail: string | null;
+  downloadUrl: string | null;
+  platform: string;
+  instructions: string;
+}
 
 const MOCK_TRACKS = [
   "Never Gonna Give You Up",
@@ -25,6 +35,7 @@ const DownloadCard = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [tracks, setTracks] = useState<TrackStatus[]>([]);
   const [showProgress, setShowProgress] = useState(false);
+  const [result, setResult] = useState<DownloadResult | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleModeChange = (newMode: "video" | "audio") => {
@@ -75,21 +86,55 @@ const DownloadCard = () => {
     }, 400);
   }, []);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!url.trim()) {
       toast.error("Please paste a valid URL");
       return;
     }
+
     setIsProcessing(true);
+    setResult(null);
 
     if (isPlaylist) {
       simulatePlaylistDownload();
       setTimeout(() => setIsProcessing(false), 1500);
-    } else {
-      setTimeout(() => {
-        setIsProcessing(false);
-        toast.info("Backend not connected. Connect an API to enable downloads.");
-      }, 2000);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke("download", {
+        body: { url: url.trim(), mode, quality },
+      });
+
+      if (error) throw new Error(error.message);
+
+      if (!data?.success) {
+        throw new Error(data?.error || "Download failed");
+      }
+
+      const downloadUrl = data.download?.url || null;
+      const newResult: DownloadResult = {
+        title: data.metadata?.title || "Unknown",
+        author: data.metadata?.author || "Unknown",
+        thumbnail: data.metadata?.thumbnail || null,
+        downloadUrl,
+        platform: data.download?.platform || "unknown",
+        instructions: data.download?.instructions || "",
+      };
+
+      setResult(newResult);
+
+      if (downloadUrl) {
+        toast.success(`Found "${newResult.title}" by ${newResult.author}. Opening download...`);
+      } else {
+        toast.warning("Could not generate download link.");
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      toast.error(message);
+      console.error("Download error:", err);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -169,6 +214,44 @@ const DownloadCard = () => {
 
       {/* Playlist Progress */}
       <PlaylistProgress tracks={tracks} mode={mode} visible={showProgress} />
+
+      {/* Download Result */}
+      <AnimatePresence>
+        {result && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="w-full max-w-xl bg-card border border-border rounded-xl p-4 flex gap-4 items-center"
+          >
+            {result.thumbnail && (
+              <img
+                src={result.thumbnail}
+                alt={result.title}
+                className="w-20 h-14 rounded-lg object-cover shrink-0"
+              />
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-foreground font-semibold truncate text-sm">{result.title}</p>
+              <p className="text-muted-foreground text-xs">{result.author}</p>
+              {result.instructions && (
+                <p className="text-muted-foreground text-xs mt-1 italic">{result.instructions}</p>
+              )}
+            </div>
+            {result.downloadUrl && (
+              <a
+                href={result.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 hover:brightness-110 transition-all"
+              >
+                <Download className="w-3.5 h-3.5" />
+                Download
+              </a>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
