@@ -117,7 +117,7 @@ const DownloadCard = () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
             playSuccess();
             fireConfetti();
-            toast.success("Playlist download complete!");
+            toast.success("Playlist download complete!" + (!isDesktop ? " (demo simulation)" : ""));
           }
         }
         return next;
@@ -150,7 +150,7 @@ const DownloadCard = () => {
             setSingleStatus("done");
             playSuccess();
             fireConfetti();
-            toast.success("Download complete!");
+            toast.success("Download complete!" + (!isDesktop ? " (demo simulation)" : ""));
           }, 800);
         } else {
           setSingleProgress(progress);
