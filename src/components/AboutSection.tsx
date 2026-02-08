@@ -24,10 +24,10 @@ const AboutSection = ({ onAvatarSecret }: AboutSectionProps) => {
       <div className="max-w-4xl mx-auto space-y-16">
         {/* The Story */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
           className="space-y-6"
         >
           <div className="flex items-center gap-3 mb-2">
@@ -55,10 +55,10 @@ const AboutSection = ({ onAvatarSecret }: AboutSectionProps) => {
 
         {/* About the Dev */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.4, delay: 0.06, ease: [0.25, 0.1, 0.25, 1] }}
           className="space-y-6"
         >
           <div className="flex items-center gap-3 mb-2">
