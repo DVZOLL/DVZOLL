@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { isTauri } from "@/lib/isTauri";
+import { tauriCheckTools, tauriGetDownloadDir } from "@/lib/tauri";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -51,6 +53,8 @@ const DEFAULT_TOOLS: ToolInfo[] = [
   },
 ];
 
+const isDesktop = isTauri();
+
 const Settings = () => {
   const navigate = useNavigate();
   const [downloadPath, setDownloadPath] = useState("~/Downloads/DVZOLL");
@@ -60,11 +64,43 @@ const Settings = () => {
   const [notifications, setNotifications] = useState(true);
   const [concurrentDownloads, setConcurrentDownloads] = useState(3);
 
-  const handleCheckTools = () => {
+  // On desktop, fetch real download dir and tool status on mount
+  useEffect(() => {
+    if (!isDesktop) return;
+    tauriGetDownloadDir().then((dir) => setDownloadPath(dir)).catch(() => {});
+    handleCheckToolsReal();
+  }, []);
+
+  const handleCheckToolsReal = async () => {
+    if (!isDesktop) {
+      handleCheckToolsSimulated();
+      return;
+    }
     setIsChecking(true);
     setTools((prev) => prev.map((t) => ({ ...t, status: "checking" as const })));
+    try {
+      const status = await tauriCheckTools();
+      setTools((prev) =>
+        prev.map((t) => ({
+          ...t,
+          status:
+            (t.name === "yt-dlp" && status.yt_dlp) ||
+            (t.name === "spotdl" && status.spotdl) ||
+            (t.name === "ffmpeg" && status.ffmpeg)
+              ? ("installed" as const)
+              : ("missing" as const),
+        }))
+      );
+    } catch {
+      setTools((prev) => prev.map((t) => ({ ...t, status: "missing" as const })));
+    } finally {
+      setIsChecking(false);
+    }
+  };
 
-    // Simulate checking
+  const handleCheckToolsSimulated = () => {
+    setIsChecking(true);
+    setTools((prev) => prev.map((t) => ({ ...t, status: "checking" as const })));
     setTimeout(() => {
       setTools((prev) =>
         prev.map((t) => ({
@@ -74,6 +110,25 @@ const Settings = () => {
       );
       setIsChecking(false);
     }, 1500);
+  };
+
+  const handleBrowse = async () => {
+    if (!isDesktop) return;
+    try {
+      const tauri = (window as any).__TAURI__;
+      // Use Tauri's dialog API to open a folder picker
+      const selected = await tauri.dialog.open({
+        directory: true,
+        multiple: false,
+        defaultPath: downloadPath,
+        title: "Select download folder",
+      });
+      if (selected && typeof selected === "string") {
+        setDownloadPath(selected);
+      }
+    } catch {
+      // User cancelled or dialog unavailable
+    }
   };
 
   return (
@@ -131,7 +186,11 @@ const Settings = () => {
                 onChange={(e) => setDownloadPath(e.target.value)}
                 className="flex-1 bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors font-mono"
               />
-              <button className="px-4 py-2.5 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium hover:bg-secondary/80 transition-colors flex items-center gap-2">
+              <button
+                onClick={handleBrowse}
+                disabled={!isDesktop}
+                className="px-4 py-2.5 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium hover:bg-secondary/80 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <FolderOpen className="w-4 h-4" />
                 Browse
               </button>
@@ -248,7 +307,7 @@ const Settings = () => {
                 </div>
               </div>
               <button
-                onClick={handleCheckTools}
+                onClick={handleCheckToolsReal}
                 disabled={isChecking}
                 className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors disabled:opacity-50"
               >
