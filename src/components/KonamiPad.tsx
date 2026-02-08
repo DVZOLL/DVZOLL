@@ -50,7 +50,7 @@ const KonamiPad = ({ open, onClose, onActivate }: KonamiPadProps) => {
             onClick={onClose}
           />
 
-          {/* Pad - anchored to bottom center */}
+          {/* Pad */}
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -61,16 +61,16 @@ const KonamiPad = ({ open, onClose, onActivate }: KonamiPadProps) => {
           >
             {/* Label */}
             <p className="text-[10px] text-muted-foreground text-center tracking-[0.2em] uppercase font-semibold mb-3">
-              Enter the code
+              Use the Force, enter the code
             </p>
 
-            {/* Progress dots */}
+            {/* Progress dots — lightsaber style */}
             <div className="flex justify-center gap-1.5 mb-4">
               {KONAMI.map((_, i) => (
                 <div
                   key={i}
                   className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                    i < progress ? "bg-primary scale-110" : "bg-muted-foreground/20"
+                    i < progress ? "bg-primary scale-110 shadow-[0_0_6px_hsl(var(--primary)/0.6)]" : "bg-muted-foreground/20"
                   }`}
                 />
               ))}

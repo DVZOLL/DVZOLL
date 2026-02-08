@@ -45,8 +45,8 @@ const GlitchOverlay = ({ active, onComplete }: GlitchOverlayProps) => {
               0deg,
               transparent,
               transparent 2px,
-              hsl(152 100% 50% / 0.03) 2px,
-              hsl(152 100% 50% / 0.03) 4px
+              hsl(var(--primary) / 0.03) 2px,
+              hsl(var(--primary) / 0.03) 4px
             )`,
           }}
         />
@@ -77,7 +77,7 @@ const GlitchOverlay = ({ active, onComplete }: GlitchOverlayProps) => {
           </>
         )}
 
-        {/* Center message */}
+        {/* Center message — Star Wars themed */}
         {glitchPhase >= 5 && (
           <motion.div
             initial={{ opacity: 0, scale: 1.5 }}
@@ -89,7 +89,7 @@ const GlitchOverlay = ({ active, onComplete }: GlitchOverlayProps) => {
                 className="text-primary text-glow font-extrabold text-2xl md:text-4xl tracking-[0.3em] uppercase"
                 style={{ fontFamily: "'Space Grotesk', monospace" }}
               >
-                GLITCH MODE
+                DISTURBANCE IN THE FORCE
               </p>
               <p className="text-muted-foreground text-xs mt-2 tracking-widest">
                 CLICK THE HEADLINE 7 TIMES TO ACTIVATE

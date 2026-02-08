@@ -11,9 +11,9 @@ const DemoBanner = () => {
     >
       <div className="max-w-5xl mx-auto px-4 py-2 flex items-center justify-center gap-3 text-xs sm:text-sm font-bold uppercase tracking-widest">
         <Eye className="w-4 h-4 animate-pulse" />
-        <span>V3 Preview — Interactive Demo</span>
+        <span>Hologram Preview — V3 Demo</span>
         <span className="hidden sm:inline text-primary-foreground/70 font-normal normal-case tracking-normal">
-          · All downloads are simulated
+          · All transmissions are simulated
         </span>
         <a
           href="https://github.com/DVZOLL/DVZOLL"

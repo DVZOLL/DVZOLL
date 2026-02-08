@@ -7,18 +7,18 @@ interface SecretTerminalProps {
 }
 
 const LINES = [
-  { text: "$ initializing DVZOLL core...", delay: 0 },
-  { text: "[OK] yt-dlp engine loaded", delay: 400 },
-  { text: "[OK] spotdl bridge connected", delay: 800 },
-  { text: "[OK] librespot handshake complete", delay: 1200 },
-  { text: "$ running diagnostics...", delay: 1800 },
+  { text: "$ initializing DVZOLL hyperdrive...", delay: 0 },
+  { text: "[OK] yt-dlp lightsaber calibrated", delay: 400 },
+  { text: "[OK] spotdl force connection established", delay: 800 },
+  { text: "[OK] librespot holocron decrypted", delay: 1200 },
+  { text: "$ scanning star systems...", delay: 1800 },
   { text: "[INFO] supported platforms: 1,337", delay: 2200 },
-  { text: "[INFO] pop-ups blocked: ∞", delay: 2600 },
-  { text: "[INFO] viruses downloaded: 0", delay: 3000 },
-  { text: "[INFO] vibes: immaculate", delay: 3400 },
-  { text: "$ echo $SECRET_MESSAGE", delay: 4000 },
-  { text: "> Built with 🫠 by DvIsZoll at 2AM", delay: 4400 },
-  { text: "> Thanks for finding this easter egg!", delay: 4800 },
+  { text: "[INFO] pop-ups destroyed: ∞ (by turbolaser)", delay: 2600 },
+  { text: "[INFO] viruses: 0 — the Force protects", delay: 3000 },
+  { text: "[INFO] midi-chlorian count: OVER 9000", delay: 3400 },
+  { text: "$ echo $JEDI_MESSAGE", delay: 4000 },
+  { text: "> Built at 2 AM in a galaxy far, far away…", delay: 4400 },
+  { text: "> Thanks for finding this, young Padawan!", delay: 4800 },
   { text: "$ _", delay: 5200 },
 ];
 
@@ -62,7 +62,7 @@ const SecretTerminal = ({ visible, onClose }: SecretTerminalProps) => {
                 <div className="w-3 h-3 rounded-full bg-muted-foreground/30" />
                 <div className="w-3 h-3 rounded-full bg-muted-foreground/30" />
               </div>
-              <span className="text-xs text-muted-foreground font-mono ml-2">dvzoll@secret ~ %</span>
+              <span className="text-xs text-muted-foreground font-mono ml-2">dvzoll@deathstar ~ %</span>
             </div>
 
             {/* Terminal body */}

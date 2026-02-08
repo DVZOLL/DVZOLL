@@ -8,6 +8,8 @@ import MatrixRain from "@/components/MatrixRain";
 import GlitchOverlay from "@/components/GlitchOverlay";
 import SecretTerminal from "@/components/SecretTerminal";
 import KonamiPad from "@/components/KonamiPad";
+import StarfieldBackground from "@/components/StarfieldBackground";
+import HyperspaceOverlay from "@/components/HyperspaceOverlay";
 import { useKonamiCode } from "@/hooks/useKonamiCode";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 import logo from "@/assets/logo.png";
@@ -19,6 +21,7 @@ const Index = () => {
   const [headlineClicks, setHeadlineClicks] = useState(0);
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [konamiPadOpen, setKonamiPadOpen] = useState(false);
+  const [hyperspaceActive, setHyperspaceActive] = useState(false);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleHeadlineClick = () => {
@@ -35,6 +38,10 @@ const Index = () => {
     setGlitchActive(false);
   }, []);
 
+  const handleHyperspaceComplete = useCallback(() => {
+    setHyperspaceActive(false);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
       {/* Easter egg overlays */}
@@ -42,17 +49,12 @@ const Index = () => {
         {konamiActive && <MatrixRain onComplete={resetKonami} />}
       </AnimatePresence>
       <GlitchOverlay active={glitchActive} onComplete={handleGlitchComplete} />
+      <HyperspaceOverlay active={hyperspaceActive} onComplete={handleHyperspaceComplete} />
       <SecretTerminal visible={terminalOpen} onClose={() => setTerminalOpen(false)} />
-
-      {/* Mobile Konami pad — opened via long-press on ⚡ */}
       <KonamiPad open={konamiPadOpen} onClose={() => setKonamiPadOpen(false)} onActivate={activateKonami} />
 
-      {/* Ambient floating orbs */}
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="ambient-orb ambient-orb-1" />
-        <div className="ambient-orb ambient-orb-2" />
-        <div className="ambient-orb ambient-orb-3" />
-      </div>
+      {/* Animated starfield with flying starships */}
+      <StarfieldBackground />
 
       {/* Hero Section with glow */}
       <main className="flex-1 flex flex-col items-center justify-center px-5 sm:px-8 pt-20 sm:pt-24 md:pt-28 pb-12 gap-8 sm:gap-10 relative z-10">
@@ -65,13 +67,13 @@ const Index = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-primary/40 text-primary text-sm font-medium tracking-wide">
+          <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-primary/40 text-primary text-sm font-medium tracking-wide shadow-[0_0_15px_hsl(var(--primary)/0.15)]">
             <img src={logo} alt="DVZOLL" className="w-5 h-5 rounded" />
-            Universal Media Downloader
+            Galactic Media Downloader
           </span>
         </motion.div>
 
-        {/* Headline — click 7x for glitch */}
+        {/* Headline */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -83,17 +85,29 @@ const Index = () => {
             className="text-[2.75rem] sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter mb-6 text-foreground leading-[1.02] cursor-default select-none"
           >
             GRAB ANY<br />
-            <span className="text-primary text-glow">MEDIA</span> INSTANTLY
+            <span className="text-primary text-glow">MEDIA</span> IN THE GALAXY
           </h1>
           <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-xl mx-auto px-2 leading-relaxed">
-            Download videos and audio from YouTube, Spotify, and 1000+ platforms.
+            Download videos and audio from YouTube, Spotify, and 1000+ systems.
             <br />
-            Maximum quality. Zero hassle.
+            Maximum quality. Zero Imperial interference.
           </p>
         </motion.div>
 
         {/* Download Controls */}
         <DownloadCard />
+
+        {/* Hyperspace jump button — hidden easter egg */}
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
+          onClick={() => setHyperspaceActive(true)}
+          className="text-[10px] text-muted-foreground/30 hover:text-primary/60 transition-colors tracking-widest uppercase cursor-pointer select-none"
+          title="Jump to hyperspace"
+        >
+          ✦ Make the jump to lightspeed ✦
+        </motion.button>
       </main>
 
       {/* Ticker */}
@@ -105,7 +119,7 @@ const Index = () => {
       {/* About & Story */}
       <AboutSection onAvatarSecret={() => { playTerminalBoot(); setTerminalOpen(true); }} />
 
-      {/* Footer — hover the ⚡ to reveal secret */}
+      {/* Footer */}
       <footer className="w-full px-6 py-10 border-t border-border text-center space-y-3 relative z-10">
         <p className="text-sm text-muted-foreground group">
           <span
@@ -120,15 +134,18 @@ const Index = () => {
               if (longPressTimer.current) clearTimeout(longPressTimer.current);
             }}
           >
-            ⚡
+            ⚔️
             <span className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] text-primary whitespace-nowrap bg-card border border-primary/30 px-2 py-1 rounded pointer-events-none">
-              hold for secrets 👀
+              hold for Jedi secrets 👀
             </span>
           </span>{" "}
           Powered by yt-dlp • spotdl • librespot
         </p>
         <p className="text-xs text-muted-foreground">
-          For educational purposes only. Respect copyright and terms of service.
+          For educational purposes only. Respect copyright and the Jedi Code.
+        </p>
+        <p className="text-[10px] text-muted-foreground/30 italic">
+          "Do. Or do not. There is no try." — Yoda
         </p>
       </footer>
     </div>
