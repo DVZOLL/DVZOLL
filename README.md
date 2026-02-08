@@ -12,7 +12,7 @@
 
   <br/><br/>
 
-  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjFtMzFoZWd5ZXp2c3BkMjlsOXdwZXJzbWpkcG5kY2cxdXVjcWtkYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7btNhMBytxAM6YBa/giphy.gif" width="300" alt="downloading intensifies" />
+  <img src="public/screenshots/hero-preview.png" width="600" alt="DVZOLL — URL detection and download" />
 
 </div>
 
@@ -104,9 +104,15 @@ Requires Visual Studio Build Tools with C++ workload and WebView2 (usually pre-i
 | 🥚 **Easter eggs** | Konami code, secret terminal, rick-roll detection |
 
 <div align="center">
-  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWRwNXh5OGdhOXNkenJ4NWRpMGwzNjU2ZmVkZjJiemZ2NW1lMjVzaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlNaQ6gWfllcjDO/giphy.gif" width="250" alt="quality matters" />
+  <img src="public/screenshots/download-progress.png" width="500" alt="DVZOLL download progress" />
   <br/>
   <sub><em>"When the FLAC hits different" — every audiophile ever</em></sub>
+</div>
+
+<div align="center">
+  <img src="public/screenshots/settings-panel.png" width="500" alt="DVZOLL settings panel" />
+  <br/>
+  <sub><em>Settings — quality presets, tool status, and color themes</em></sub>
 </div>
 
 ---
@@ -170,7 +176,7 @@ npm run tauri build      # production build (.dmg / .deb / .msi)
 
 <div align="center">
 
-  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2V4YWRncjlhbm1yd2NjeGN1dW9sZXc2YXF1aXRrN3VoaTY2b3BxZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26BRuo6sLetdllPAQ/giphy.gif" width="200" alt="built different" />
+  ⚡
 
   <br/><br/>
 
