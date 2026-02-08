@@ -10,6 +10,7 @@ pub struct DownloadRequest {
     pub quality: String,    // e.g. "1080p", "4k", "mp3-320", "flac"
     pub platform: String,   // "youtube", "spotify", or "other"
     pub is_playlist: bool,
+    pub output_dir: Option<String>,  // user-chosen download folder
 }
 
 #[derive(Debug, Serialize)]
@@ -95,7 +96,20 @@ pub async fn check_tools_installed() -> ToolStatus {
 
 #[command]
 pub async fn download_media(request: DownloadRequest) -> DownloadResult {
-    let output_dir = get_output_dir();
+    // Use user-chosen directory if provided, otherwise default
+    let output_dir = match &request.output_dir {
+        Some(dir) if !dir.is_empty() => {
+            let expanded = if dir.starts_with("~/") {
+                dirs::home_dir()
+                    .map(|h| h.join(&dir[2..]))
+                    .unwrap_or_else(|| PathBuf::from(dir))
+            } else {
+                PathBuf::from(dir)
+            };
+            expanded
+        }
+        _ => get_output_dir(),
+    };
 
     // Ensure output directory exists
     if let Err(e) = tokio::fs::create_dir_all(&output_dir).await {

@@ -8,6 +8,7 @@ interface DownloadRequest {
   quality: string;
   platform: string;
   is_playlist: boolean;
+  output_dir?: string;
 }
 
 interface DownloadResult {
