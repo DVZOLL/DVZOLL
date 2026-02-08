@@ -2,13 +2,19 @@
   <img src="src/assets/logo.png" alt="DVZOLL" width="80" height="80" style="border-radius: 16px;" />
   <h1>DVZOLL</h1>
   <p><strong>Grab any media. Instantly.</strong></p>
-  <p>Download video & audio from YouTube, Spotify, and 1000+ platforms.<br/>Maximum quality. Zero hassle.</p>
+  <p>Download video & audio from YouTube, Spotify, and 1000+ platforms.<br/>Maximum quality. Zero hassle. Zero sketchy ads.</p>
 
   <br/>
 
-  <a href="https://dvzoll.lovable.app"><img src="https://img.shields.io/badge/🌐_Live_App-dvzoll.lovable.app-00ff88?style=for-the-badge" alt="Live App" /></a>
+  <a href="https://dvzoll.lovable.app"><img src="https://img.shields.io/badge/🌐_Live_Demo-dvzoll.lovable.app-00ff88?style=for-the-badge" alt="Live Demo" /></a>
   <img src="https://img.shields.io/badge/platforms-macOS_·_Linux_·_Windows-1a1a2e?style=for-the-badge" alt="Platforms" />
   <img src="https://img.shields.io/badge/engines-yt--dlp_·_spotdl_·_ffmpeg-1a1a2e?style=for-the-badge" alt="Engines" />
+
+  <br/><br/>
+
+  <img src="https://media.giphy.com/media/HUplkVCPY7jTW/giphy.gif" alt="downloading intensifies" width="400" />
+
+  <p><em>^ actual footage of DVZOLL users</em></p>
 
 </div>
 
@@ -16,32 +22,40 @@
 
 ## ⚡ What is DVZOLL?
 
-A universal media downloader that actually works — available as a **web app** and a **native desktop app** powered by [Tauri](https://tauri.app).
+You know those download sites where you click "Download" and suddenly you're married to three toolbars and a crypto miner? **DVZOLL is the opposite of that.**
 
-| | Web App | Desktop App |
-|---|---|---|
-| **Downloads** | Simulated (demo) | Real — powered by yt-dlp & spotdl |
-| **Platforms** | Any browser | macOS · Linux · Windows |
-| **Quality** | 4K / FLAC / WAV / MP3 320 | 4K / FLAC / WAV / MP3 320 |
-| **Playlists** | ✅ | ✅ |
+It's a native desktop app powered by [Tauri](https://tauri.app) that downloads media for real — 4K video, FLAC audio, entire playlists — using battle-tested engines like **yt-dlp**, **spotdl**, and **ffmpeg** under the hood. No browser. No ads. No nonsense.
+
+Want to try it before committing? The **[live demo](https://dvzoll.lovable.app)** simulates the full experience in your browser — same UI, same vibes, just without the actual file downloads.
+
+### What you get vs. What you don't get
+
+| ✅ What you get | ❌ What you don't get |
+|---|---|
+| 4K video downloads | 240p filmed-on-a-toaster quality |
+| FLAC / WAV lossless audio | Washing machine audio™ |
+| Clean, beautiful UI | 47 fake "Download" buttons |
+| Per-track playlist progress | "Converting... 99%... forever" |
+| 3 color themes | Surprise browser extensions |
+| Easter eggs 🥚 | Trojan horses disguised as `.mp3` files |
 
 ---
 
 ## 🚀 Quick Start
 
-### Web — Just visit
+### Web — Just vibe-check it
 
-> **[dvzoll.lovable.app](https://dvzoll.lovable.app)**
+> **[dvzoll.lovable.app](https://dvzoll.lovable.app)** — no install, no commitment, no judgment.
 
-### Desktop — Three commands
+### Desktop — Three commands, one coffee ☕
 
 ```sh
 git clone https://github.com/DvIsZoll/dvzoll.git && cd dvzoll
-chmod +x scripts/setup-macos.sh && ./scripts/setup-macos.sh   # installs everything
+chmod +x scripts/setup-macos.sh && ./scripts/setup-macos.sh
 npm install && npm run tauri dev
 ```
 
-That's it. The setup script handles Rust, Node, ffmpeg, yt-dlp, and spotdl automatically.
+That's it. The setup script handles Rust, Node, ffmpeg, yt-dlp, and spotdl automatically. Go grab a coffee while Rust compiles — you've earned it.
 
 <details>
 <summary><strong>🐧 Linux</strong></summary>
@@ -50,7 +64,7 @@ That's it. The setup script handles Rust, Node, ffmpeg, yt-dlp, and spotdl autom
 chmod +x scripts/setup-linux.sh && ./scripts/setup-linux.sh
 npm install && npm run tauri dev
 ```
-Supports `apt` (Ubuntu/Debian), `dnf` (Fedora), and `pacman` (Arch).
+Supports `apt` (Ubuntu/Debian), `dnf` (Fedora), and `pacman` (Arch). We don't discriminate.
 </details>
 
 <details>
@@ -68,13 +82,22 @@ Requires Visual Studio Build Tools with C++ workload and WebView2 (usually pre-i
 
 ## 🎛️ Features
 
-- **Smart URL detection** — auto-identifies YouTube, Spotify, TikTok, Vimeo, Twitter, and more
-- **Video + Audio modes** — switch between video (4K → 720p) and audio (FLAC, WAV, AAC, MP3 320)
-- **Playlist downloads** — grab entire playlists with per-track progress
-- **Multi-phase progress** — fetching → downloading → converting → done
-- **Settings panel** — configure download path, concurrent downloads, tool locations
-- **3 color themes** — Cyber Green, Neon Purple, Sunset Orange
-- **Easter eggs** — Konami code, terminal, rick-roll detection 🥚
+| Feature | Details |
+|---|---|
+| 🔍 **Smart URL detection** | Auto-identifies YouTube, Spotify, TikTok, Vimeo, Twitter, and more |
+| 🎬 **Video + Audio modes** | Video (4K → 720p) or Audio (FLAC, WAV, AAC, MP3 320) — we're not savages |
+| 📋 **Playlist downloads** | Grab entire playlists with per-track progress bars |
+| 📊 **Multi-phase progress** | Fetching → Downloading → Converting → Done. No mystery spinners. |
+| ⚙️ **Settings panel** | Configure download path, concurrent downloads, tool locations |
+| 🎨 **3 color themes** | Cyber Green · Neon Purple · Sunset Orange |
+| 🥚 **Easter eggs** | Konami code, secret terminal, rick-roll detection... you'll find them |
+
+<div align="center">
+  <br/>
+  <img src="https://media.giphy.com/media/l4FGni1RBAR2OWsGk/giphy.gif" alt="audiophile moment" width="350" />
+  <p><em>DVZOLL users when they hear FLAC for the first time</em></p>
+  <br/>
+</div>
 
 ---
 
@@ -102,11 +125,13 @@ dvzoll/
 
 ## 📋 Prerequisites
 
-| Tool | Purpose | Auto-installed by setup script |
+> All auto-installed by the setup scripts. Sit back and relax.
+
+| Tool | Purpose | Auto-installed |
 |------|---------|:---:|
-| Rust | Tauri compilation | ✅ |
+| Rust | Tauri compilation (the coffee break part) | ✅ |
 | Node.js | Frontend toolchain | ✅ |
-| ffmpeg | Media processing | ✅ |
+| ffmpeg | Media processing wizard | ✅ |
 | yt-dlp | YouTube + 1000 sites | ✅ |
 | spotdl | Spotify downloads | ✅ |
 | Python 3 | spotdl dependency | ✅ |
@@ -126,7 +151,7 @@ dvzoll/
 | `npm ERR! ERESOLVE` | Try `npm install --legacy-peer-deps` |
 | WebView2 missing (Windows) | Download from [developer.microsoft.com/en-us/microsoft-edge/webview2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) |
 
-> **Still stuck?** Open an [issue](https://github.com/DvIsZoll/dvzoll/issues) with your terminal output.
+> **Still stuck?** Open an [issue](https://github.com/DvIsZoll/dvzoll/issues) with your terminal output. We don't bite.
 
 ---
 
@@ -142,14 +167,26 @@ npm run tauri build      # production build (.dmg / .deb / .msi)
 
 ## 🛠️ Tech Stack
 
-**Frontend** — React · TypeScript · Vite · Tailwind CSS · shadcn/ui · Framer Motion
-**Desktop** — Tauri · Rust · tokio
-**Engines** — yt-dlp · spotdl · ffmpeg
+| Layer | Technologies |
+|-------|-------------|
+| **Frontend** | React · TypeScript · Vite · Tailwind CSS · shadcn/ui · Framer Motion |
+| **Desktop** | Tauri · Rust · tokio |
+| **Engines** | yt-dlp · spotdl · ffmpeg |
 
 ---
 
 <div align="center">
+
+  <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="mic drop" width="250" />
+
+  <br/><br/>
+
   <sub>Built with obsession by <strong>DvIsZoll</strong> — because every other download site was sketch.</sub>
   <br/>
   <sub>⚠️ For educational purposes only. Respect copyright and platform terms of service.</sub>
+
+  <br/><br/>
+
+  <a href="https://github.com/DvIsZoll/dvzoll">⭐ Star this repo if DVZOLL saved you from a sketchy download site. Your ego feeds ours.</a>
+
 </div>
