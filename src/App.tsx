@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useThemeContext";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import DemoBanner from "@/components/DemoBanner";
-import { isTauri } from "@/lib/isTauri";
+import { isTauri } from "@/lib/tauri";
 
 const Index = lazy(() => import("./pages/Index"));
 const DevTerminal = lazy(() => import("./pages/DevTerminal"));
