@@ -36,7 +36,7 @@ A universal media downloader that actually works — available as a **web app** 
 ### Desktop — Three commands
 
 ```sh
-git clone https://github.com/DvIsZoll/dvzoll.git && cd dvzoll
+git clone https://github.com/DVZOLL/DVZOLL.git && cd DVZOLL
 chmod +x scripts/setup-macos.sh && ./scripts/setup-macos.sh   # installs everything
 npm install && npm run tauri dev
 ```
