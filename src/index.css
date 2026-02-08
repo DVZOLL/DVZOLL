@@ -118,4 +118,57 @@
       hsl(var(--primary) / 0.015) 4px
     );
   }
+
+  /* Hologram card effects */
+  .hologram-card {
+    animation: hologram-flicker 4s ease-in-out infinite;
+    box-shadow: 0 0 8px hsl(var(--primary) / 0.1), inset 0 0 12px hsl(var(--primary) / 0.03);
+  }
+
+  @keyframes hologram-flicker {
+    0%, 100% { opacity: 1; }
+    10% { opacity: 0.95; }
+    12% { opacity: 1; }
+    40% { opacity: 0.98; }
+    42% { opacity: 0.92; }
+    44% { opacity: 1; }
+    70% { opacity: 0.97; }
+    72% { opacity: 0.88; }
+    74% { opacity: 1; }
+  }
+
+  .hologram-shimmer {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      hsl(var(--primary) / 0.06) 50%,
+      transparent 100%
+    );
+    background-size: 100% 200%;
+    animation: hologram-scan 3s linear infinite;
+  }
+
+  @keyframes hologram-scan {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 0% 200%; }
+  }
+
+  /* Death Star superlaser */
+  @keyframes superlaser-charge {
+    0% { transform: scale(0.3); opacity: 0.2; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+    70% { transform: scale(0.8); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes superlaser-beam {
+    0% { width: 0; opacity: 0; }
+    30% { width: 20%; opacity: 0.8; }
+    100% { width: 100%; opacity: 0; }
+  }
+
+  @keyframes superlaser-pulse {
+    0%, 100% { box-shadow: 0 0 8px hsl(120 80% 45% / 0.4), 0 0 16px hsl(120 80% 45% / 0.2); }
+    50% { box-shadow: 0 0 20px hsl(120 80% 45% / 0.7), 0 0 40px hsl(120 80% 45% / 0.3), 0 0 60px hsl(120 80% 45% / 0.1); }
+  }
 }

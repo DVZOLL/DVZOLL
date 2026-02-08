@@ -64,15 +64,31 @@ const UrlPreview = ({ url }: UrlPreviewProps) => {
           transition={{ duration: 0.2 }}
           className="w-full"
         >
-          <div className="flex items-center gap-3 px-4 py-2.5 bg-card/80 border border-border rounded-lg backdrop-blur-sm">
-            <span className={platform.color}>{platform.icon}</span>
-            <span className="text-sm text-foreground font-medium">{platform.name}</span>
-            <span className="text-xs text-muted-foreground truncate flex-1">{url}</span>
+          <div className="hologram-card relative flex items-center gap-3 px-4 py-2.5 bg-card/80 border border-primary/20 rounded-lg backdrop-blur-sm overflow-hidden">
+            {/* Holographic scanlines */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: `repeating-linear-gradient(
+                  0deg,
+                  transparent,
+                  transparent 2px,
+                  hsl(var(--primary) / 0.04) 2px,
+                  hsl(var(--primary) / 0.04) 4px
+                )`,
+              }}
+            />
+            {/* Holographic flicker shimmer */}
+            <div className="absolute inset-0 pointer-events-none hologram-shimmer" />
+
+            <span className={`${platform.color} relative z-10`}>{platform.icon}</span>
+            <span className="text-sm text-foreground font-medium relative z-10">{platform.name}</span>
+            <span className="text-xs text-muted-foreground truncate flex-1 relative z-10">{url}</span>
             <a
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors relative z-10"
             >
               <ExternalLink className="w-3.5 h-3.5" />
             </a>

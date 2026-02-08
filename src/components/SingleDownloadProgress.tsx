@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, AlertCircle, FolderOpen, FileDown } from "lucide-react";
+import { startVaderBreathing, stopVaderBreathing } from "@/hooks/useStarWarsSounds";
 
 interface SingleDownloadProgressProps {
   visible: boolean;
@@ -70,6 +72,13 @@ const SingleDownloadProgress = ({
   const config = statusConfig[status] || statusConfig.idle;
   const quote = config.quotes.length > 0 ? pickQuote(config.quotes, progress) : "";
 
+  // Vader breathing on error hover
+  useEffect(() => {
+    if (status === "error") {
+      startVaderBreathing();
+      return () => stopVaderBreathing();
+    }
+  }, [status]);
   return (
     <AnimatePresence>
       {visible && status !== "idle" && (
@@ -161,7 +170,7 @@ const SingleDownloadProgress = ({
             </div>
 
             {/* Lightsaber progress bar */}
-            {(status === "downloading" || status === "converting") && (
+            {status === "downloading" && (
               <div className="space-y-2 relative z-10">
                 <div className="relative w-full h-3 bg-[hsl(230,15%,12%)] rounded-full overflow-hidden border border-[hsl(45,80%,55%,0.1)]">
                   {/* Lightsaber glow */}
@@ -202,6 +211,65 @@ const SingleDownloadProgress = ({
                     </span>
                   )}
                 </div>
+              </div>
+            )}
+
+            {/* Death Star Superlaser — converting phase */}
+            {status === "converting" && (
+              <div className="relative z-10 flex flex-col items-center gap-3 py-3">
+                {/* Superlaser focal point */}
+                <div className="relative w-16 h-16 flex items-center justify-center">
+                  {/* Outer charging ring */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full border-2"
+                    style={{
+                      borderColor: "hsl(120 80% 45% / 0.4)",
+                    }}
+                    animate={{ rotate: 360, scale: [0.8, 1.1, 0.8] }}
+                    transition={{ rotate: { duration: 3, repeat: Infinity, ease: "linear" }, scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" } }}
+                  />
+                  {/* Inner charging core */}
+                  <motion.div
+                    className="w-8 h-8 rounded-full"
+                    style={{
+                      background: "radial-gradient(circle, hsl(120 80% 60%), hsl(120 80% 35%), transparent)",
+                      animation: "superlaser-pulse 1s ease-in-out infinite",
+                    }}
+                    animate={{ scale: [0.6, 1.2, 0.6] }}
+                    transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  {/* Convergence beams */}
+                  {[0, 60, 120, 180, 240, 300].map((angle) => (
+                    <motion.div
+                      key={angle}
+                      className="absolute w-8 h-[2px]"
+                      style={{
+                        background: "linear-gradient(90deg, transparent, hsl(120 80% 50% / 0.8))",
+                        transformOrigin: "right center",
+                        top: "50%",
+                        left: "50%",
+                        transform: `rotate(${angle}deg) translateX(-24px)`,
+                      }}
+                      animate={{ opacity: [0.2, 1, 0.2] }}
+                      transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut", delay: angle / 360 }}
+                    />
+                  ))}
+                </div>
+
+                {/* Beam firing outward */}
+                <motion.div
+                  className="h-[3px] rounded-full"
+                  style={{
+                    background: "linear-gradient(90deg, hsl(120 80% 55%), hsl(120 80% 45% / 0.3), transparent)",
+                    boxShadow: "0 0 12px hsl(120 80% 50% / 0.6), 0 0 24px hsl(120 80% 50% / 0.2)",
+                  }}
+                  animate={{ width: ["0%", "80%", "60%", "90%", "70%"] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                />
+
+                <p className="text-xs font-bold tracking-[0.25em] uppercase" style={{ color: "hsl(120, 80%, 50%)" }}>
+                  SUPERLASER CHARGING…
+                </p>
               </div>
             )}
 
