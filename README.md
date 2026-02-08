@@ -28,16 +28,16 @@ It's a native desktop app powered by [Tauri](https://tauri.app) that downloads m
 
 Want to try it before committing? The **[live demo](https://dvzoll.lovable.app)** simulates the full experience in your browser — same UI, same vibes, just without the actual file downloads.
 
-### What you get vs. What you don't get
+### What you don't get
 
-| ✅ What you get | ❌ What you don't get |
-|---|---|
-| 4K video downloads | 240p filmed-on-a-toaster quality |
-| FLAC / WAV lossless audio | Washing machine audio™ |
-| Clean, beautiful UI | 47 fake "Download" buttons |
-| Per-track playlist progress | "Converting... 99%... forever" |
-| 3 color themes | Surprise browser extensions |
-| Easter eggs 🥚 | Trojan horses disguised as `.mp3` files |
+| ❌ What you don't get |
+|---|
+| 240p filmed-on-a-toaster quality |
+| Washing machine audio™ |
+| 47 fake "Download" buttons |
+| "Converting... 99%... forever" |
+| Surprise browser extensions |
+| Trojan horses disguised as `.mp3` files |
 
 ---
 
