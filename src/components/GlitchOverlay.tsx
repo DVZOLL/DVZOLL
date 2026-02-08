@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { startVaderBreathing, stopVaderBreathing } from "@/hooks/useStarWarsSounds";
 
 interface GlitchOverlayProps {
   active: boolean;
@@ -8,6 +9,14 @@ interface GlitchOverlayProps {
 
 const GlitchOverlay = ({ active, onComplete }: GlitchOverlayProps) => {
   const [glitchPhase, setGlitchPhase] = useState(0);
+
+  // Vader breathing during glitch
+  useEffect(() => {
+    if (active) {
+      startVaderBreathing();
+      return () => stopVaderBreathing();
+    }
+  }, [active]);
 
   useEffect(() => {
     if (!active) return;

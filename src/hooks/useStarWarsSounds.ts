@@ -173,9 +173,84 @@ export const playHyperspaceJump = () => {
   noise.stop(now + 0.8);
 };
 
+/** Darth Vader breathing — cyclic inhale/exhale */
+let vaderStopFn: (() => void) | null = null;
+
+export const startVaderBreathing = () => {
+  if (vaderStopFn) return; // already playing
+  const ctx = getCtx();
+  let stopped = false;
+
+  const breathCycle = () => {
+    if (stopped) return;
+    const now = ctx.currentTime;
+
+    // Inhale — filtered noise rising
+    const inhaleLen = 0.8;
+    const inhaleBuffer = ctx.createBuffer(1, ctx.sampleRate * inhaleLen, ctx.sampleRate);
+    const inhaleData = inhaleBuffer.getChannelData(0);
+    for (let i = 0; i < inhaleData.length; i++) {
+      inhaleData[i] = (Math.random() * 2 - 1) * 0.08;
+    }
+    const inSrc = ctx.createBufferSource();
+    inSrc.buffer = inhaleBuffer;
+    const inFilter = ctx.createBiquadFilter();
+    inFilter.type = "lowpass";
+    inFilter.frequency.setValueAtTime(200, now);
+    inFilter.frequency.linearRampToValueAtTime(600, now + inhaleLen);
+    inFilter.Q.value = 1;
+    const inGain = ctx.createGain();
+    inGain.gain.setValueAtTime(0.001, now);
+    inGain.gain.linearRampToValueAtTime(0.06, now + 0.3);
+    inGain.gain.linearRampToValueAtTime(0.001, now + inhaleLen);
+    inSrc.connect(inFilter);
+    inFilter.connect(inGain);
+    inGain.connect(ctx.destination);
+    inSrc.start(now);
+    inSrc.stop(now + inhaleLen);
+
+    // Exhale — filtered noise falling
+    const exhaleStart = now + 0.9;
+    const exhaleLen = 0.9;
+    const exhaleBuffer = ctx.createBuffer(1, ctx.sampleRate * exhaleLen, ctx.sampleRate);
+    const exhaleData = exhaleBuffer.getChannelData(0);
+    for (let i = 0; i < exhaleData.length; i++) {
+      exhaleData[i] = (Math.random() * 2 - 1) * 0.08;
+    }
+    const exSrc = ctx.createBufferSource();
+    exSrc.buffer = exhaleBuffer;
+    const exFilter = ctx.createBiquadFilter();
+    exFilter.type = "lowpass";
+    exFilter.frequency.setValueAtTime(500, exhaleStart);
+    exFilter.frequency.linearRampToValueAtTime(150, exhaleStart + exhaleLen);
+    exFilter.Q.value = 1;
+    const exGain = ctx.createGain();
+    exGain.gain.setValueAtTime(0.001, exhaleStart);
+    exGain.gain.linearRampToValueAtTime(0.05, exhaleStart + 0.2);
+    exGain.gain.linearRampToValueAtTime(0.001, exhaleStart + exhaleLen);
+    exSrc.connect(exFilter);
+    exFilter.connect(exGain);
+    exGain.connect(ctx.destination);
+    exSrc.start(exhaleStart);
+    exSrc.stop(exhaleStart + exhaleLen);
+
+    // Schedule next cycle
+    setTimeout(() => breathCycle(), 2000);
+  };
+
+  breathCycle();
+  vaderStopFn = () => { stopped = true; vaderStopFn = null; };
+};
+
+export const stopVaderBreathing = () => {
+  vaderStopFn?.();
+};
+
 export const useStarWarsSounds = () => ({
   playLightsaberIgnite: useCallback(playLightsaberIgnite, []),
   playBlasterShot: useCallback(playBlasterShot, []),
   playImperialMarch: useCallback(playImperialMarch, []),
   playHyperspaceJump: useCallback(playHyperspaceJump, []),
+  startVaderBreathing: useCallback(startVaderBreathing, []),
+  stopVaderBreathing: useCallback(stopVaderBreathing, []),
 });
