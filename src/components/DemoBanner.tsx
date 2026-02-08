@@ -16,7 +16,7 @@ const DemoBanner = () => {
           · All downloads are simulated
         </span>
         <a
-          href="https://github.com/DvIsZoll/dvzoll"
+          href="https://github.com/DVZOLL/DVZOLL"
           target="_blank"
           rel="noopener noreferrer"
           className="ml-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary-foreground/15 hover:bg-primary-foreground/25 transition-colors text-xs font-semibold"
