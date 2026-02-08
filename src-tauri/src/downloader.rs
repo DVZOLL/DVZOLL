@@ -71,8 +71,6 @@ async fn download_ytdlp(req: &DownloadRequest, output_dir: &PathBuf) -> Download
         "-o".to_string(),
         output_template,
         "--no-overwrites".to_string(),
-        "--ffmpeg-location".to_string(),
-        "ffmpeg".to_string(),
     ];
 
     if req.mode == "audio" {
