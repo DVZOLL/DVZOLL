@@ -89,10 +89,17 @@ if ! check python3; then
   brew install python3
 fi
 
+# pipx (needed for spotdl)
+if ! check pipx; then
+  echo -e "${YELLOW}Installing pipx...${NC}"
+  brew install pipx
+  pipx ensurepath
+fi
+
 # spotdl
 if ! check spotdl; then
-  echo -e "${YELLOW}Installing spotdl...${NC}"
-  pip3 install spotdl
+  echo -e "${YELLOW}Installing spotdl via pipx...${NC}"
+  pipx install spotdl
 fi
 echo ""
 
