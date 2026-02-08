@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { isTauri } from "@/lib/isTauri";
-import { tauriCheckTools, tauriGetDownloadDir } from "@/lib/tauri";
+import { isTauri, tauriCheckTools, tauriGetDownloadDir } from "@/lib/tauri";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,

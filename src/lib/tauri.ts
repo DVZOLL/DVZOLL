@@ -1,4 +1,6 @@
-import { isTauri } from "@/lib/isTauri";
+/** Returns true when running inside the Tauri desktop shell. */
+export const isTauri = (): boolean =>
+  typeof window !== "undefined" && !!(window as any).__TAURI__;
 
 interface DownloadRequest {
   url: string;
@@ -48,5 +50,4 @@ export const tauriInstallPrereqs = async () => {
   return invoke("install_prerequisites");
 };
 
-export { isTauri };
 export type { DownloadRequest, DownloadResult, ToolStatus };
