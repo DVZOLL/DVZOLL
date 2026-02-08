@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useThemeContext";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import DemoBanner from "@/components/DemoBanner";
-import { isTauri } from "@/lib/tauri";
+
 const Index = lazy(() => import("./pages/Index"));
 const DevTerminal = lazy(() => import("./pages/DevTerminal"));
 const Settings = lazy(() => import("./pages/Settings"));
@@ -22,7 +22,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <ThemeSwitcher />
-        {!isTauri && <DemoBanner />}
+        <DemoBanner />
         <BrowserRouter>
           <Suspense fallback={<div className="min-h-screen bg-background" />}>
             <Routes>

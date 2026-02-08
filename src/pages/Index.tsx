@@ -36,7 +36,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col relative overflow-x-hidden">
+    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
       {/* Easter egg overlays */}
       <AnimatePresence>
         {konamiActive && <MatrixRain onComplete={resetKonami} />}
@@ -48,7 +48,7 @@ const Index = () => {
       <KonamiPad open={konamiPadOpen} onClose={() => setKonamiPadOpen(false)} onActivate={activateKonami} />
 
       {/* Ambient floating orbs */}
-      <div className="pointer-events-none fixed inset-0 z-0 will-change-transform">
+      <div className="pointer-events-none fixed inset-0 z-0">
         <div className="ambient-orb ambient-orb-1" />
         <div className="ambient-orb ambient-orb-2" />
         <div className="ambient-orb ambient-orb-3" />
@@ -61,9 +61,9 @@ const Index = () => {
 
         {/* Badge */}
         <motion.div
-          initial={{ opacity: 0, y: -8 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+          transition={{ duration: 0.4 }}
         >
           <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full border border-primary/40 text-primary text-xs sm:text-sm font-medium tracking-wide">
             <img src={logo} alt="DVZOLL" className="w-5 h-5 rounded" />
@@ -73,9 +73,9 @@ const Index = () => {
 
         {/* Headline — click 7x for glitch */}
         <motion.div
-          initial={{ opacity: 0, y: -12 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.08, ease: [0.25, 0.1, 0.25, 1] }}
+          transition={{ duration: 0.5, delay: 0.1 }}
           className="text-center max-w-4xl relative z-10"
         >
           <h1

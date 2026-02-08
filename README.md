@@ -6,13 +6,9 @@
 
   <br/>
 
-  <a href="https://dvzoll.lovable.app"><img src="https://img.shields.io/badge/🌐_Live_Demo-dvzoll.lovable.app-00ff88?style=for-the-badge" alt="Live Demo" /></a>
+  <a href="https://dvzoll.lovable.app"><img src="https://img.shields.io/badge/🌐_Live_App-dvzoll.lovable.app-00ff88?style=for-the-badge" alt="Live App" /></a>
   <img src="https://img.shields.io/badge/platforms-macOS_·_Linux_·_Windows-1a1a2e?style=for-the-badge" alt="Platforms" />
   <img src="https://img.shields.io/badge/engines-yt--dlp_·_spotdl_·_ffmpeg-1a1a2e?style=for-the-badge" alt="Engines" />
-
-  <br/><br/>
-
-  <img src="public/screenshots/hero-preview.png" width="600" alt="DVZOLL — URL detection and download" />
 
 </div>
 
@@ -20,52 +16,32 @@
 
 ## ⚡ What is DVZOLL?
 
-A **native desktop app** that downloads media from the internet — the way it should've always worked.
+A universal media downloader that actually works — available as a **web app** and a **native desktop app** powered by [Tauri](https://tauri.app).
 
-No sketchy sites. No fake "Download" buttons. No `totally_not_a_virus.mp3.exe`.
-
-Just paste a URL, pick your quality, and go. That's it. That's the app.
-
-> 🎮 **Want to see it in action?** Check the [interactive demo](https://dvzoll.lovable.app) — it's a simulated preview so you can explore the UI before installing.
-
-<table>
-<tr>
-<td width="50%">
-
-### 🎬 What you get
-- **Real downloads** — yt-dlp & spotdl under the hood
-- **4K video** or **lossless FLAC audio** — your call
-- **Full playlist support** with per-track progress
-- **macOS · Linux · Windows** — one codebase, all platforms
-
-</td>
-<td width="50%">
-
-### 🚫 What you don't get
-- Pop-up ads asking if you've won an iPhone
-- Files that are actually trojans wearing a `.mp3` costume
-- Audio that sounds like it was recorded inside a washing machine
-- That one "Download" button that's actually an ad
-
-</td>
-</tr>
-</table>
+| | Web App | Desktop App |
+|---|---|---|
+| **Downloads** | Simulated (demo) | Real — powered by yt-dlp & spotdl |
+| **Platforms** | Any browser | macOS · Linux · Windows |
+| **Quality** | 4K / FLAC / WAV / MP3 320 | 4K / FLAC / WAV / MP3 320 |
+| **Playlists** | ✅ | ✅ |
 
 ---
 
 ## 🚀 Quick Start
 
+### Web — Just visit
+
+> **[dvzoll.lovable.app](https://dvzoll.lovable.app)**
+
 ### Desktop — Three commands
 
 ```sh
-git clone https://github.com/DVZOLL/DVZOLL.git && cd DVZOLL
+git clone https://github.com/DvIsZoll/dvzoll.git && cd dvzoll
 chmod +x scripts/setup-macos.sh && ./scripts/setup-macos.sh   # installs everything
 npm install && npm run tauri dev
 ```
 
 That's it. The setup script handles Rust, Node, ffmpeg, yt-dlp, and spotdl automatically.
-
-> ☕ Go grab a coffee while it compiles. Rust takes a minute the first time. Worth it though.
 
 <details>
 <summary><strong>🐧 Linux</strong></summary>
@@ -92,28 +68,13 @@ Requires Visual Studio Build Tools with C++ workload and WebView2 (usually pre-i
 
 ## 🎛️ Features
 
-| Feature | Details |
-|---------|---------|
-| 🔗 **Smart URL detection** | Auto-identifies YouTube, Spotify, TikTok, Vimeo, Twitter, and more |
-| 🎬 **Video + Audio modes** | Video (4K → 720p) · Audio (FLAC, WAV, AAC, MP3 320) |
-| 📋 **Playlist downloads** | Grab entire playlists with per-track progress |
-| 📊 **Multi-phase progress** | Fetching → Downloading → Converting → Done |
-| ⚙️ **Settings panel** | Default quality presets, download path, concurrent downloads, tool status |
-| 🎨 **3 color themes** | Cyber Green · Neon Purple · Sunset Orange |
-| ✨ **Buttery smooth UI** | GPU-accelerated animations with native-feel scrolling |
-| 🥚 **Easter eggs** | Konami code, secret terminal, rick-roll detection |
-
-<div align="center">
-  <img src="public/screenshots/download-progress.png" width="500" alt="DVZOLL download progress" />
-  <br/>
-  <sub><em>"When the FLAC hits different" — every audiophile ever</em></sub>
-</div>
-
-<div align="center">
-  <img src="public/screenshots/settings-panel.png" width="500" alt="DVZOLL settings panel" />
-  <br/>
-  <sub><em>Settings — quality presets, tool status, and color themes</em></sub>
-</div>
+- **Smart URL detection** — auto-identifies YouTube, Spotify, TikTok, Vimeo, Twitter, and more
+- **Video + Audio modes** — switch between video (4K → 720p) and audio (FLAC, WAV, AAC, MP3 320)
+- **Playlist downloads** — grab entire playlists with per-track progress
+- **Multi-phase progress** — fetching → downloading → converting → done
+- **Settings panel** — configure download path, concurrent downloads, tool locations
+- **3 color themes** — Cyber Green, Neon Purple, Sunset Orange
+- **Easter eggs** — Konami code, terminal, rick-roll detection 🥚
 
 ---
 
@@ -150,8 +111,6 @@ dvzoll/
 | spotdl | Spotify downloads | ✅ |
 | Python 3 | spotdl dependency | ✅ |
 
-> Don't worry about installing these manually — the setup scripts do everything. We're not savages.
-
 ---
 
 ## 🔧 Development
@@ -166,26 +125,14 @@ npm run tauri build      # production build (.dmg / .deb / .msi)
 
 ## 🛠️ Tech Stack
 
-| Layer | Tech |
-|-------|------|
-| **Frontend** | React · TypeScript · Vite · Tailwind CSS · shadcn/ui · Framer Motion |
-| **Desktop** | Tauri · Rust · tokio |
-| **Engines** | yt-dlp · spotdl · ffmpeg |
+**Frontend** — React · TypeScript · Vite · Tailwind CSS · shadcn/ui · Framer Motion
+**Desktop** — Tauri · Rust · tokio
+**Engines** — yt-dlp · spotdl · ffmpeg
 
 ---
 
 <div align="center">
-
-  ⚡
-
-  <br/><br/>
-
-  Built with obsession by **DvIsZoll** — because every other download site was sketch.
-
-  ⚠️ *For educational purposes only. Respect copyright and platform terms of service.*
-
+  <sub>Built with obsession by <strong>DvIsZoll</strong> — because every other download site was sketch.</sub>
   <br/>
-
-  <sub>If this saved you from a sketchy download site, consider ⭐ starring the repo. It feeds the developer's ego.</sub>
-
+  <sub>⚠️ For educational purposes only. Respect copyright and platform terms of service.</sub>
 </div>
