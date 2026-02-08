@@ -55,7 +55,7 @@ const Index = () => {
       </div>
 
       {/* Hero Section with glow */}
-      <main className="flex-1 flex flex-col items-center justify-center px-5 sm:px-8 pt-16 sm:pt-20 md:pt-24 pb-12 gap-8 sm:gap-10 relative z-10">
+      <main className="flex-1 flex flex-col items-center justify-center px-5 sm:px-8 pt-20 sm:pt-24 md:pt-28 pb-12 gap-8 sm:gap-10 relative z-10">
         {/* Background glow */}
         <div className="absolute inset-0 hero-glow pointer-events-none" />
 

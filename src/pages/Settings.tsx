@@ -408,7 +408,7 @@ const Settings = () => {
           transition={{ delay: 0.3 }}
           className="text-center text-xs text-muted-foreground mt-10"
         >
-          DVZOLL v3 — Settings saved automatically
+          DVZOLL {isDesktop ? "v3" : "v3.0.0-preview"} — Settings saved automatically
         </motion.p>
       </div>
     </div>
