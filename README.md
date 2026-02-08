@@ -113,6 +113,23 @@ dvzoll/
 
 ---
 
+## ❓ Troubleshooting
+
+| Error | Fix |
+|-------|-----|
+| `fatal: destination path 'dvzoll' already exists` | Delete and re-clone: `rm -rf dvzoll && git clone ...` — or just `cd dvzoll && git pull` |
+| `Could not read package.json` / `ENOENT` | You're in the wrong directory. Run `cd dvzoll` first. |
+| `chmod: scripts/setup-macos.sh: No such file or directory` | Same as above — `cd` into the project folder before running scripts. |
+| `error: failed to run custom build command for ...` | Ensure Rust is installed: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh` |
+| `yt-dlp: command not found` | Run the setup script again, or install manually: `brew install yt-dlp` (macOS) / `pip install yt-dlp` |
+| `ffmpeg: command not found` | `brew install ffmpeg` (macOS) / `sudo apt install ffmpeg` (Linux) |
+| `npm ERR! ERESOLVE` | Try `npm install --legacy-peer-deps` |
+| WebView2 missing (Windows) | Download from [developer.microsoft.com/en-us/microsoft-edge/webview2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) |
+
+> **Still stuck?** Open an [issue](https://github.com/DvIsZoll/dvzoll/issues) with your terminal output.
+
+---
+
 ## 🔧 Development
 
 ```sh
