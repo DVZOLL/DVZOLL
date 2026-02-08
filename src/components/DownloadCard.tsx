@@ -181,14 +181,23 @@ const DownloadCard = () => {
         setSingleFilename(result.output_path || "");
         playSuccess();
         fireConfetti();
-        toast.success(result.message || "Download complete!");
+        toast.success(result.message || "Download complete!", {
+          description: result.output_path ? `Saved to ${result.output_path}` : undefined,
+          duration: 5000,
+        });
       } else {
         setSingleStatus("error");
-        toast.error(result.message || "Download failed");
+        toast.error("Download failed", {
+          description: result.message || "An unknown error occurred",
+          duration: 6000,
+        });
       }
     } catch (err: any) {
       setSingleStatus("error");
-      toast.error(err?.message || "Download failed — check that yt-dlp/spotdl are installed");
+      toast.error("Download failed", {
+        description: err?.message || "Check that yt-dlp and spotdl are installed",
+        duration: 6000,
+      });
     } finally {
       setIsProcessing(false);
     }
