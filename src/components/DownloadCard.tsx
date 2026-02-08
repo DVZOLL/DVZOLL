@@ -11,6 +11,7 @@ import { Link, Download, Loader2, ListMusic, Settings } from "lucide-react";
 import { useConfetti } from "@/hooks/useConfetti";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 import { useNavigate } from "react-router-dom";
+import { isTauri, tauriDownload } from "@/lib/tauri";
 
 const MOCK_TRACKS = [
   "Never Gonna Give You Up",
@@ -36,6 +37,23 @@ const MOCK_SIZES: Record<string, string> = {
   "AAC": "~12 MB",
   "MP3 320": "~10 MB",
   "WAV": "~55 MB",
+};
+
+const isDesktop = isTauri();
+
+const detectPlatform = (url: string): string => {
+  const lower = url.toLowerCase();
+  if (lower.includes("spotify.com")) return "spotify";
+  if (lower.includes("youtube.com") || lower.includes("youtu.be")) return "youtube";
+  return "other";
+};
+
+const mapQuality = (q: string): string => {
+  const map: Record<string, string> = {
+    "4K": "4k", "2K": "1440p", "1080P": "1080p", "720P": "720p",
+    "FLAC": "flac", "AAC": "aac", "MP3 320": "mp3-320", "WAV": "wav",
+  };
+  return map[q] || q.toLowerCase();
 };
 
 const DownloadCard = () => {
@@ -141,6 +159,41 @@ const DownloadCard = () => {
     }, 1000);
   }, [mode, fireConfetti, playSuccess]);
 
+  const handleRealDownload = async () => {
+    setIsProcessing(true);
+    setSingleStatus("fetching");
+    setSingleProgress(0);
+    setSingleFilename("");
+
+    try {
+      const platform = detectPlatform(url);
+      const result = await tauriDownload({
+        url,
+        mode,
+        quality: mapQuality(quality),
+        platform,
+        is_playlist: isPlaylist,
+      });
+
+      if (result.success) {
+        setSingleStatus("done");
+        setSingleProgress(100);
+        setSingleFilename(result.output_path || "");
+        playSuccess();
+        fireConfetti();
+        toast.success(result.message || "Download complete!");
+      } else {
+        setSingleStatus("error");
+        toast.error(result.message || "Download failed");
+      }
+    } catch (err: any) {
+      setSingleStatus("error");
+      toast.error(err?.message || "Download failed — check that yt-dlp/spotdl are installed");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const handleDownload = () => {
     if (!url.trim()) {
       toast.error("Please paste a valid URL");
@@ -162,8 +215,14 @@ const DownloadCard = () => {
       return;
     }
 
-    setIsProcessing(true);
+    // V1 (desktop): real download via Tauri
+    if (isDesktop) {
+      handleRealDownload();
+      return;
+    }
 
+    // V0 (web): simulation
+    setIsProcessing(true);
     if (isPlaylist) {
       simulatePlaylistDownload();
       setTimeout(() => setIsProcessing(false), 1500);
