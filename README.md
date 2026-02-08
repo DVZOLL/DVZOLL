@@ -72,8 +72,9 @@ Requires Visual Studio Build Tools with C++ workload and WebView2 (usually pre-i
 - **Video + Audio modes** — switch between video (4K → 720p) and audio (FLAC, WAV, AAC, MP3 320)
 - **Playlist downloads** — grab entire playlists with per-track progress
 - **Multi-phase progress** — fetching → downloading → converting → done
-- **Settings panel** — configure download path, concurrent downloads, tool locations
+- **Settings panel** — default quality presets (video & audio), download path, concurrent downloads, tool status
 - **3 color themes** — Cyber Green, Neon Purple, Sunset Orange
+- **Smooth native feel** — GPU-accelerated animations with buttery scrolling
 - **Easter eggs** — Konami code, terminal, rick-roll detection 🥚
 
 ---
