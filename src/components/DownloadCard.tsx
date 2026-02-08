@@ -182,6 +182,7 @@ const DownloadCard = () => {
         quality: mapQuality(quality),
         platform,
         is_playlist: isPlaylist,
+        output_dir: settings.downloadPath,
       });
 
       if (result.success) {
