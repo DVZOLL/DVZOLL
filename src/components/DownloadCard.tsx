@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Link, Download, Loader2, ListMusic, Settings } from "lucide-react";
 import { useConfetti } from "@/hooks/useConfetti";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
+import { useStarWarsSounds } from "@/hooks/useStarWarsSounds";
 import { useNavigate } from "react-router-dom";
 import { isTauri, tauriDownload } from "@/lib/tauri";
 import { useSettings } from "@/hooks/useSettings";
@@ -69,6 +70,7 @@ const DownloadCard = () => {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const fireConfetti = useConfetti();
   const { playSuccess, playRickroll } = useSoundEffects();
+  const { playLightsaberIgnite, playBlasterShot, playImperialMarch } = useStarWarsSounds();
   const navigate = useNavigate();
 
   // Single download progress state
@@ -202,14 +204,16 @@ const DownloadCard = () => {
           duration: 5000,
         });
       } else {
-        setSingleStatus("error");
-        toast.error("⚠ I have a bad feeling about this", {
-          description: result.message || "The dark side clouds everything",
-          duration: 6000,
-        });
+      setSingleStatus("error");
+      playImperialMarch();
+      toast.error("⚠ I have a bad feeling about this", {
+        description: result.message || "The dark side clouds everything",
+        duration: 6000,
+      });
       }
     } catch (err: any) {
       setSingleStatus("error");
+      playImperialMarch();
       toast.error("⚠ The transmission was lost", {
         description: err?.message || "Check that yt-dlp and spotdl are installed — the archives must be complete",
         duration: 6000,
@@ -220,6 +224,7 @@ const DownloadCard = () => {
   };
 
   const handleDownload = () => {
+    playBlasterShot();
     if (!url.trim()) {
       toast.error("Please paste a valid URL");
       return;
@@ -239,6 +244,9 @@ const DownloadCard = () => {
       }, 1500);
       return;
     }
+
+    // Lightsaber ignite on download start
+    playLightsaberIgnite();
 
     // V1 (desktop): real download via Tauri
     if (isDesktop) {

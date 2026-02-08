@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useCallback } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useThemeContext";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import DemoBanner from "@/components/DemoBanner";
+import OpeningCrawl from "@/components/OpeningCrawl";
+import LightsaberCursor from "@/components/LightsaberCursor";
 import { isTauri } from "@/lib/tauri";
 
 const Index = lazy(() => import("./pages/Index"));
@@ -18,27 +20,34 @@ const queryClient = new QueryClient();
 
 const isDesktop = isTauri();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <ThemeSwitcher />
-        {!isDesktop && <DemoBanner />}
-        <BrowserRouter>
-          <Suspense fallback={<div className="min-h-screen bg-background" />}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/dev" element={<DevTerminal />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const [crawlDone, setCrawlDone] = useState(false);
+  const handleCrawlComplete = useCallback(() => setCrawlDone(true), []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <TooltipProvider>
+          {!crawlDone && <OpeningCrawl onComplete={handleCrawlComplete} />}
+          <LightsaberCursor />
+          <Toaster />
+          <Sonner />
+          <ThemeSwitcher />
+          {!isDesktop && <DemoBanner />}
+          <BrowserRouter>
+            <Suspense fallback={<div className="min-h-screen bg-background" />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/dev" element={<DevTerminal />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
