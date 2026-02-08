@@ -50,7 +50,7 @@ Want to try it before committing? The **[live demo](https://dvzoll.lovable.app)*
 ### Desktop — Three commands, one coffee ☕
 
 ```sh
-git clone https://github.com/DvIsZoll/dvzoll.git && cd dvzoll
+git clone https://github.com/DVZOLL/DVZOLL.git && cd DVZOLL
 chmod +x scripts/setup-macos.sh && ./scripts/setup-macos.sh
 npm install && npm run tauri dev
 ```
@@ -151,7 +151,7 @@ dvzoll/
 | `npm ERR! ERESOLVE` | Try `npm install --legacy-peer-deps` |
 | WebView2 missing (Windows) | Download from [developer.microsoft.com/en-us/microsoft-edge/webview2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) |
 
-> **Still stuck?** Open an [issue](https://github.com/DvIsZoll/dvzoll/issues) with your terminal output. We don't bite.
+> **Still stuck?** Open an [issue](https://github.com/DVZOLL/DVZOLL/issues) with your terminal output. We don't bite.
 
 ---
 
@@ -187,6 +187,6 @@ npm run tauri build      # production build (.dmg / .deb / .msi)
 
   <br/><br/>
 
-  <a href="https://github.com/DvIsZoll/dvzoll">⭐ Star this repo if DVZOLL saved you from a sketchy download site. Your ego feeds ours.</a>
+  <a href="https://github.com/DVZOLL/DVZOLL">⭐ Star this repo if DVZOLL saved you from a sketchy download site. Your ego feeds ours.</a>
 
 </div>
