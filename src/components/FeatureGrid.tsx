@@ -26,7 +26,7 @@ const features = [
 
 const FeatureGrid = () => {
   return (
-    <section className="w-full px-6 py-20">
+    <section className="w-full px-5 sm:px-8 py-20 md:py-28">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -35,15 +35,15 @@ const FeatureGrid = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-3">
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter mb-4">
             WHY <span className="text-primary">DVZOLL</span>?
           </h2>
-          <p className="text-muted-foreground text-base">
+          <p className="text-muted-foreground text-base md:text-lg">
             Built for speed, privacy, and the best possible quality
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {features.map((f, i) => (
             <motion.div
               key={f.title}

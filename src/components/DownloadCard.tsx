@@ -117,7 +117,7 @@ const DownloadCard = () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
             playSuccess();
             fireConfetti();
-            toast.success("Playlist download complete! (demo simulation)");
+            toast.success("Playlist download complete!");
           }
         }
         return next;
@@ -150,7 +150,7 @@ const DownloadCard = () => {
             setSingleStatus("done");
             playSuccess();
             fireConfetti();
-            toast.success("Download complete! (demo simulation)");
+            toast.success("Download complete!");
           }, 800);
         } else {
           setSingleProgress(progress);
@@ -237,7 +237,7 @@ const DownloadCard = () => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="w-full max-w-xl flex flex-col items-center gap-4 relative z-10"
+      className="w-full max-w-xl flex flex-col items-center gap-5 relative z-10"
     >
       {/* URL Input */}
       <div className="relative w-full group">
@@ -248,7 +248,7 @@ const DownloadCard = () => {
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleDownload()}
           placeholder={isPlaylist ? "Paste playlist URL here..." : "Paste your media URL here..."}
-          className="w-full bg-card border border-border rounded-xl pl-12 pr-14 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:box-glow transition-all duration-300 text-base"
+          className="w-full bg-card border border-border rounded-2xl pl-12 pr-14 py-4.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:box-glow transition-all duration-300 text-base"
         />
         <button
           onClick={() => navigate("/settings")}
@@ -316,7 +316,7 @@ const DownloadCard = () => {
         whileTap={{ scale: 0.98 }}
         onClick={handleDownload}
         disabled={isProcessing}
-        className="w-full max-w-xs bg-primary text-primary-foreground font-bold text-base uppercase tracking-widest py-4 rounded-xl hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 box-glow hover:box-glow-strong"
+        className="w-full max-w-xs bg-primary text-primary-foreground font-bold text-base uppercase tracking-widest py-4.5 rounded-2xl hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 box-glow hover:box-glow-strong"
       >
         {isProcessing ? (
           <>

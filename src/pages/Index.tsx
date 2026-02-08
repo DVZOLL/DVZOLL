@@ -55,7 +55,7 @@ const Index = () => {
       </div>
 
       {/* Hero Section with glow */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-24 sm:pt-28 pb-10 gap-6 sm:gap-8 relative z-10">
+      <main className="flex-1 flex flex-col items-center justify-center px-5 sm:px-8 pt-16 sm:pt-20 md:pt-24 pb-12 gap-8 sm:gap-10 relative z-10">
         {/* Background glow */}
         <div className="absolute inset-0 hero-glow pointer-events-none" />
 
@@ -65,7 +65,7 @@ const Index = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full border border-primary/40 text-primary text-xs sm:text-sm font-medium tracking-wide">
+          <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-primary/40 text-primary text-sm font-medium tracking-wide">
             <img src={logo} alt="DVZOLL" className="w-5 h-5 rounded" />
             Universal Media Downloader
           </span>
@@ -80,12 +80,12 @@ const Index = () => {
         >
           <h1
             onClick={handleHeadlineClick}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-5 text-foreground leading-[1.05] cursor-default select-none"
+            className="text-[2.75rem] sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter mb-6 text-foreground leading-[1.02] cursor-default select-none"
           >
             GRAB ANY<br />
             <span className="text-primary text-glow">MEDIA</span> INSTANTLY
           </h1>
-          <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-xl mx-auto px-2">
+          <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-xl mx-auto px-2 leading-relaxed">
             Download videos and audio from YouTube, Spotify, and 1000+ platforms.
             <br />
             Maximum quality. Zero hassle.
@@ -106,7 +106,7 @@ const Index = () => {
       <AboutSection onAvatarSecret={() => { playTerminalBoot(); setTerminalOpen(true); }} />
 
       {/* Footer — hover the ⚡ to reveal secret */}
-      <footer className="w-full px-6 py-8 border-t border-border text-center space-y-2 relative z-10">
+      <footer className="w-full px-6 py-10 border-t border-border text-center space-y-3 relative z-10">
         <p className="text-sm text-muted-foreground group">
           <span
             className="relative inline-block cursor-default select-none"

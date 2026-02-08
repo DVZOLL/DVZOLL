@@ -20,7 +20,7 @@ const AboutSection = ({ onAvatarSecret }: AboutSectionProps) => {
   };
 
   return (
-    <section className="w-full px-6 py-20 relative z-10">
+    <section className="w-full px-5 sm:px-8 py-20 md:py-28 relative z-10">
       <div className="max-w-4xl mx-auto space-y-16">
         {/* The Story */}
         <motion.div
