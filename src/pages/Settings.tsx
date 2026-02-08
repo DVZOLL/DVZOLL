@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { isTauri, tauriCheckTools, tauriGetDownloadDir } from "@/lib/tauri";
 import { useNavigate } from "react-router-dom";
+import { useSettings } from "@/hooks/useSettings";
 import {
   ArrowLeft,
   FolderOpen,
@@ -55,13 +56,19 @@ const DEFAULT_TOOLS: ToolInfo[] = [
 const isDesktop = isTauri();
 
 const Settings = () => {
+  const { settings, update } = useSettings();
   const navigate = useNavigate();
-  const [downloadPath, setDownloadPath] = useState("~/Downloads/DVZOLL");
+  const [downloadPath, setDownloadPath] = useState(settings.downloadPath);
   const [tools, setTools] = useState<ToolInfo[]>(DEFAULT_TOOLS);
   const [isChecking, setIsChecking] = useState(false);
-  const [autoUpdate, setAutoUpdate] = useState(true);
-  const [notifications, setNotifications] = useState(true);
-  const [concurrentDownloads, setConcurrentDownloads] = useState(3);
+  const [autoUpdate, setAutoUpdate] = useState(settings.autoUpdate);
+  const [notifications, setNotifications] = useState(settings.notifications);
+  const [concurrentDownloads, setConcurrentDownloads] = useState(settings.concurrentDownloads);
+
+  // Persist changes
+  useEffect(() => {
+    update({ downloadPath, autoUpdate, notifications, concurrentDownloads });
+  }, [downloadPath, autoUpdate, notifications, concurrentDownloads, update]);
 
   // On desktop, fetch real download dir and tool status on mount
   useEffect(() => {

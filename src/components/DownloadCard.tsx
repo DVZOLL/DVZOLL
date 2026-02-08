@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CategoryChips from "./CategoryChips";
 import QualitySelector from "./QualitySelector";
@@ -12,6 +12,7 @@ import { useConfetti } from "@/hooks/useConfetti";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 import { useNavigate } from "react-router-dom";
 import { isTauri, tauriDownload } from "@/lib/tauri";
+import { useSettings } from "@/hooks/useSettings";
 
 const MOCK_TRACKS = [
   "Never Gonna Give You Up",
@@ -57,10 +58,11 @@ const mapQuality = (q: string): string => {
 };
 
 const DownloadCard = () => {
+  const { settings, update } = useSettings();
   const [url, setUrl] = useState("");
-  const [mode, setMode] = useState<"video" | "audio">("video");
-  const [quality, setQuality] = useState("1080P");
-  const [isPlaylist, setIsPlaylist] = useState(false);
+  const [mode, setMode] = useState<"video" | "audio">(settings.lastMode);
+  const [quality, setQuality] = useState(settings.lastQuality);
+  const [isPlaylist, setIsPlaylist] = useState(settings.lastIsPlaylist);
   const [isProcessing, setIsProcessing] = useState(false);
   const [tracks, setTracks] = useState<TrackStatus[]>([]);
   const [showPlaylistProgress, setShowPlaylistProgress] = useState(false);
@@ -77,8 +79,15 @@ const DownloadCard = () => {
 
   const handleModeChange = (newMode: "video" | "audio") => {
     setMode(newMode);
-    setQuality(newMode === "video" ? "1080P" : "MP3 320");
+    const newQuality = newMode === "video" ? "1080P" : "MP3 320";
+    setQuality(newQuality);
+    update({ lastMode: newMode, lastQuality: newQuality });
   };
+
+  // Persist quality and playlist changes
+  useEffect(() => {
+    update({ lastQuality: quality, lastIsPlaylist: isPlaylist });
+  }, [quality, isPlaylist, update]);
 
   const simulatePlaylistDownload = useCallback(() => {
     const initialTracks: TrackStatus[] = MOCK_TRACKS.map((title, i) => ({
