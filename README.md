@@ -16,14 +16,12 @@
 
 ## ⚡ What is DVZOLL?
 
-A universal media downloader that actually works — available as a **web app** and a **native desktop app** powered by [Tauri](https://tauri.app).
+A universal media downloader that actually works — a **native desktop app** powered by [Tauri](https://tauri.app). Try the [live demo](https://dvzoll.lovable.app) to get a feel for it.
 
-| | Web App | Desktop App |
-|---|---|---|
-| **Downloads** | Simulated (demo) | Real — powered by yt-dlp & spotdl |
-| **Platforms** | Any browser | macOS · Linux · Windows |
-| **Quality** | 4K / FLAC / WAV / MP3 320 | 4K / FLAC / WAV / MP3 320 |
-| **Playlists** | ✅ | ✅ |
+- **Real downloads** powered by yt-dlp & spotdl
+- **Platforms** — macOS · Linux · Windows
+- **Quality** — 4K / FLAC / WAV / MP3 320
+- **Playlists** — full playlist support with per-track progress
 
 ---
 
