@@ -126,7 +126,10 @@ const DownloadCard = () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
             playSuccess();
             fireConfetti();
-            toast.success("Playlist download complete!" + (!isDesktop ? " (demo simulation)" : ""));
+            toast.success("✦ Playlist acquired — the Force is strong with this collection", {
+              description: !isDesktop ? "Demo simulation" : undefined,
+              duration: 5000,
+            });
           }
         }
         return next;
@@ -159,7 +162,10 @@ const DownloadCard = () => {
             setSingleStatus("done");
             playSuccess();
             fireConfetti();
-            toast.success("Download complete!" + (!isDesktop ? " (demo simulation)" : ""));
+            toast.success("✦ Transmission complete — may the Force be with you", {
+              description: !isDesktop ? "Demo simulation" : undefined,
+              duration: 5000,
+            });
           }, 800);
         } else {
           setSingleProgress(progress);
@@ -191,21 +197,21 @@ const DownloadCard = () => {
         setSingleFilename(result.output_path || "");
         playSuccess();
         fireConfetti();
-        toast.success(result.message || "Download complete!", {
-          description: result.output_path ? `Saved to ${result.output_path}` : undefined,
+        toast.success("✦ " + (result.message || "Transmission complete"), {
+          description: result.output_path ? `Saved to ${result.output_path}` : "May the Force be with you",
           duration: 5000,
         });
       } else {
         setSingleStatus("error");
-        toast.error("Download failed", {
-          description: result.message || "An unknown error occurred",
+        toast.error("⚠ I have a bad feeling about this", {
+          description: result.message || "The dark side clouds everything",
           duration: 6000,
         });
       }
     } catch (err: any) {
       setSingleStatus("error");
-      toast.error("Download failed", {
-        description: err?.message || "Check that yt-dlp and spotdl are installed",
+      toast.error("⚠ The transmission was lost", {
+        description: err?.message || "Check that yt-dlp and spotdl are installed — the archives must be complete",
         duration: 6000,
       });
     } finally {
