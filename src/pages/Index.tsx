@@ -12,11 +12,13 @@ import StarfieldBackground from "@/components/StarfieldBackground";
 import HyperspaceOverlay from "@/components/HyperspaceOverlay";
 import { useKonamiCode } from "@/hooks/useKonamiCode";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
+import { useStarWarsSounds } from "@/hooks/useStarWarsSounds";
 import logo from "@/assets/logo.png";
 
 const Index = () => {
   const { activated: konamiActive, reset: resetKonami, activate: activateKonami } = useKonamiCode();
   const { playGlitch, playTerminalBoot } = useSoundEffects();
+  const { playHyperspaceJump } = useStarWarsSounds();
   const [glitchActive, setGlitchActive] = useState(false);
   const [headlineClicks, setHeadlineClicks] = useState(0);
   const [terminalOpen, setTerminalOpen] = useState(false);
@@ -102,7 +104,7 @@ const Index = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2 }}
-          onClick={() => setHyperspaceActive(true)}
+          onClick={() => { playHyperspaceJump(); setHyperspaceActive(true); }}
           className="text-[10px] text-muted-foreground/30 hover:text-primary/60 transition-colors tracking-widest uppercase cursor-pointer select-none"
           title="Jump to hyperspace"
         >
