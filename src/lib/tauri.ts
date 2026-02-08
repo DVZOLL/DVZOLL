@@ -26,12 +26,13 @@ interface ToolStatus {
  * Calls a Tauri command. Returns null if not running in Tauri.
  */
 async function invoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T> {
-  // Access the Tauri invoke bridge injected at runtime
-  const tauri = (window as any).__TAURI__;
-  if (!tauri?.invoke) {
+  // Tauri v1: invoke lives at window.__TAURI__.tauri.invoke
+  const tauriGlobal = (window as any).__TAURI__;
+  const invokeFn = tauriGlobal?.tauri?.invoke ?? tauriGlobal?.invoke;
+  if (!invokeFn) {
     throw new Error("Tauri runtime not available");
   }
-  return tauri.invoke(cmd, args) as Promise<T>;
+  return invokeFn(cmd, args) as Promise<T>;
 }
 
 export const tauriDownload = async (request: DownloadRequest): Promise<DownloadResult> => {
