@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CategoryChips from "./CategoryChips";
 import QualitySelector from "./QualitySelector";
@@ -7,10 +7,11 @@ import PlaylistProgress, { TrackStatus } from "./PlaylistProgress";
 import SingleDownloadProgress from "./SingleDownloadProgress";
 import UrlPreview from "./UrlPreview";
 import { toast } from "sonner";
-import { Link, Download, Loader2, ListMusic, Settings } from "lucide-react";
+import { Link, Download, Loader2, ListMusic, Settings, AlertTriangle } from "lucide-react";
 import { useConfetti } from "@/hooks/useConfetti";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 import { useNavigate } from "react-router-dom";
+import { isTauri, tauriInvoke, ToolStatus, DownloadResult } from "@/lib/tauri";
 
 const MOCK_TRACKS = [
   "Never Gonna Give You Up",
@@ -38,6 +39,26 @@ const MOCK_SIZES: Record<string, string> = {
   "WAV": "~55 MB",
 };
 
+/** Map UI quality labels → Rust backend quality strings */
+const QUALITY_MAP: Record<string, string> = {
+  "4K": "4k",
+  "2K": "1440p",
+  "1080P": "1080p",
+  "720P": "720p",
+  "FLAC": "flac",
+  "AAC": "aac",
+  "MP3 320": "mp3-320",
+  "WAV": "wav",
+};
+
+/** Detect which platform a URL belongs to */
+function detectPlatform(url: string): string {
+  const lower = url.toLowerCase();
+  if (lower.includes("spotify.com") || lower.includes("open.spotify")) return "spotify";
+  if (lower.includes("youtube.com") || lower.includes("youtu.be")) return "youtube";
+  return "other";
+}
+
 const DownloadCard = () => {
   const [url, setUrl] = useState("");
   const [mode, setMode] = useState<"video" | "audio">("video");
@@ -57,11 +78,23 @@ const DownloadCard = () => {
   const [singleFilename, setSingleFilename] = useState("");
   const singleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Tauri desktop: tool availability
+  const [toolStatus, setToolStatus] = useState<ToolStatus | null>(null);
+
+  useEffect(() => {
+    if (isTauri) {
+      tauriInvoke<ToolStatus>("check_tools_installed").then((s) => {
+        if (s) setToolStatus(s);
+      });
+    }
+  }, []);
+
   const handleModeChange = (newMode: "video" | "audio") => {
     setMode(newMode);
     setQuality(newMode === "video" ? "1080P" : "MP3 320");
   };
 
+  // ─── MOCK simulation (web demo only) ────────────────────────
   const simulatePlaylistDownload = useCallback(() => {
     const initialTracks: TrackStatus[] = MOCK_TRACKS.map((title, i) => ({
       id: i,
@@ -112,13 +145,11 @@ const DownloadCard = () => {
     setSingleProgress(0);
     setSingleFilename("");
 
-    // Phase 1: Fetching (1s)
     singleTimerRef.current = setTimeout(() => {
       setSingleStatus("downloading");
       setSingleFilename(MOCK_FILENAMES[mode]);
       let progress = 0;
 
-      // Phase 2: Downloading (progress ticks)
       const interval = setInterval(() => {
         progress += Math.floor(Math.random() * 15 + 8);
         if (progress >= 100) {
@@ -127,7 +158,6 @@ const DownloadCard = () => {
           setSingleProgress(100);
           setSingleStatus("converting");
 
-          // Phase 3: Converting (0.8s)
           setTimeout(() => {
             setSingleStatus("done");
             playSuccess();
@@ -141,6 +171,64 @@ const DownloadCard = () => {
     }, 1000);
   }, [mode, fireConfetti, playSuccess]);
 
+  // ─── REAL Tauri download ─────────────────────────────────────
+  const realDownload = useCallback(async () => {
+    const platform = detectPlatform(url);
+
+    // Guard: Spotify URLs need spotdl
+    if (platform === "spotify" && toolStatus && !toolStatus.spotdl) {
+      toast.error("spotdl is not installed. Run the setup script first.");
+      return;
+    }
+    if (platform !== "spotify" && toolStatus && !toolStatus.yt_dlp) {
+      toast.error("yt-dlp is not installed. Run the setup script first.");
+      return;
+    }
+
+    setSingleStatus("fetching");
+    setSingleProgress(0);
+    setSingleFilename("");
+
+    // We can't get real-time progress from the CLI easily in v1,
+    // so we show an indeterminate "downloading" state.
+    setTimeout(() => {
+      setSingleStatus("downloading");
+      setSingleFilename(mode === "video" ? "downloading…" : "downloading…");
+      setSingleProgress(30); // indeterminate feel
+    }, 800);
+
+    try {
+      const result = await tauriInvoke<DownloadResult>("download_media", {
+        request: {
+          url,
+          mode,
+          quality: QUALITY_MAP[quality] || quality.toLowerCase(),
+          platform,
+          is_playlist: isPlaylist,
+        },
+      });
+
+      if (result && result.success) {
+        setSingleProgress(100);
+        setSingleStatus("done");
+        playSuccess();
+        fireConfetti();
+        toast.success(result.message || "Download complete!", {
+          description: result.output_path ? `Saved to ${result.output_path}` : undefined,
+        });
+      } else {
+        setSingleStatus("error");
+        toast.error(result?.message || "Download failed");
+      }
+    } catch (err) {
+      setSingleStatus("error");
+      toast.error(`Download error: ${err}`);
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [url, mode, quality, isPlaylist, toolStatus, playSuccess, fireConfetti]);
+
+  // ─── Main handler ────────────────────────────────────────────
   const handleDownload = () => {
     if (!url.trim()) {
       toast.error("Please paste a valid URL");
@@ -164,14 +252,23 @@ const DownloadCard = () => {
 
     setIsProcessing(true);
 
-    if (isPlaylist) {
-      simulatePlaylistDownload();
-      setTimeout(() => setIsProcessing(false), 1500);
+    if (isTauri) {
+      // Desktop: real download
+      realDownload();
     } else {
-      simulateSingleDownload();
-      setTimeout(() => setIsProcessing(false), 1500);
+      // Web: mock simulation
+      if (isPlaylist) {
+        simulatePlaylistDownload();
+        setTimeout(() => setIsProcessing(false), 1500);
+      } else {
+        simulateSingleDownload();
+        setTimeout(() => setIsProcessing(false), 1500);
+      }
     }
   };
+
+  // Missing tools warning (desktop only)
+  const missingTools = isTauri && toolStatus && (!toolStatus.yt_dlp || !toolStatus.ffmpeg);
 
   return (
     <motion.div
@@ -180,6 +277,17 @@ const DownloadCard = () => {
       transition={{ duration: 0.6, delay: 0.2 }}
       className="w-full max-w-xl flex flex-col items-center gap-4 relative z-10"
     >
+      {/* Missing tools warning */}
+      {missingTools && (
+        <div className="w-full flex items-center gap-2 px-4 py-3 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive text-sm">
+          <AlertTriangle className="w-4 h-4 shrink-0" />
+          <span>
+            Some tools are missing ({!toolStatus!.yt_dlp && "yt-dlp"}{!toolStatus!.yt_dlp && !toolStatus!.ffmpeg && ", "}{!toolStatus!.ffmpeg && "ffmpeg"}).
+            Run the setup script to install them.
+          </span>
+        </div>
+      )}
+
       {/* URL Input */}
       <div className="relative w-full group">
         <Link className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
@@ -262,7 +370,7 @@ const DownloadCard = () => {
         {isProcessing ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            Processing...
+            {isTauri ? "Downloading..." : "Processing..."}
           </>
         ) : (
           <>
