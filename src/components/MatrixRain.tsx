@@ -5,7 +5,7 @@ interface MatrixRainProps {
   onComplete: () => void;
 }
 
-const CHARS = "DVZOLL01アイウエオカキクケコ⚡▶♫◎✕☁◆";
+const CHARS = "DVZOLL01FORCEJEDIREBELSITH⚔★◆▲♦";
 const DURATION = 6000;
 
 const MatrixRain = ({ onComplete }: MatrixRainProps) => {
@@ -21,7 +21,6 @@ const MatrixRain = ({ onComplete }: MatrixRainProps) => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Read the current --primary CSS variable and convert to usable color
     const rootStyle = getComputedStyle(document.documentElement);
     const primaryHSL = rootStyle.getPropertyValue("--primary").trim();
     const rainColor = primaryHSL ? `hsl(${primaryHSL})` : "hsl(152, 100%, 50%)";
@@ -31,7 +30,7 @@ const MatrixRain = ({ onComplete }: MatrixRainProps) => {
     const drops = Array(columns).fill(1);
 
     const draw = () => {
-      ctx.fillStyle = "rgba(10, 20, 15, 0.06)";
+      ctx.fillStyle = "rgba(5, 5, 15, 0.07)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.fillStyle = rainColor;
@@ -76,7 +75,7 @@ const MatrixRain = ({ onComplete }: MatrixRainProps) => {
           className="text-primary text-glow font-extrabold text-4xl md:text-6xl tracking-wider"
           style={{ fontFamily: "'Space Grotesk', monospace" }}
         >
-          YOU FOUND IT
+          THE FORCE AWAKENS
         </motion.p>
         <motion.p
           initial={{ opacity: 0 }}

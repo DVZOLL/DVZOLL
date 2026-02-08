@@ -9,14 +9,23 @@ const platforms = [
   { icon: "⚡", name: "TWITCH" },
   { icon: "◆", name: "DAILYMOTION" },
   { icon: "▶", name: "YOUTUBE" },
+  { icon: "⚔", name: "JEDI ARCHIVES" },
+  { icon: "★", name: "DEATH STAR DB" },
 ];
 
 const PlatformTicker = () => {
   const doubled = [...platforms, ...platforms];
 
   return (
-    <div className="w-full overflow-hidden border-y border-border py-5 md:py-6 bg-secondary/30">
-      <div className="flex ticker-scroll whitespace-nowrap">
+    <div className="w-full overflow-hidden border-y border-border py-5 md:py-6 bg-secondary/30 relative">
+      {/* Subtle scanline overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-30"
+        style={{
+          background: `repeating-linear-gradient(0deg, transparent, transparent 3px, hsl(var(--primary) / 0.02) 3px, hsl(var(--primary) / 0.02) 4px)`,
+        }}
+      />
+      <div className="flex ticker-scroll whitespace-nowrap relative z-10">
         {doubled.map((platform, i) => (
           <span
             key={i}
