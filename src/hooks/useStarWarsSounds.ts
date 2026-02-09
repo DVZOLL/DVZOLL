@@ -136,6 +136,51 @@ export const playImperialMarch = () => {
   });
 };
 
+/** TIE Fighter scream — iconic doppler howl */
+export const playTieFighterScream = () => {
+  const ctx = getCtx();
+  const now = ctx.currentTime;
+  const duration = 1.2;
+
+  const masterGain = ctx.createGain();
+  masterGain.connect(ctx.destination);
+  masterGain.gain.setValueAtTime(0.001, now);
+  masterGain.gain.linearRampToValueAtTime(0.06, now + 0.2);
+  masterGain.gain.setValueAtTime(0.06, now + 0.5);
+  masterGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+  // Core screech — two detuned sawtooths
+  const osc1 = ctx.createOscillator();
+  osc1.type = "sawtooth";
+  osc1.frequency.setValueAtTime(900, now);
+  osc1.frequency.exponentialRampToValueAtTime(600, now + duration);
+  osc1.connect(masterGain);
+  osc1.start(now);
+  osc1.stop(now + duration);
+
+  const osc2 = ctx.createOscillator();
+  osc2.type = "sawtooth";
+  osc2.frequency.setValueAtTime(920, now);
+  osc2.frequency.exponentialRampToValueAtTime(580, now + duration);
+  osc2.connect(masterGain);
+  osc2.start(now);
+  osc2.stop(now + duration);
+
+  // High whine
+  const whine = ctx.createOscillator();
+  whine.type = "sine";
+  whine.frequency.setValueAtTime(1800, now);
+  whine.frequency.exponentialRampToValueAtTime(1200, now + duration);
+  const whineGain = ctx.createGain();
+  whineGain.gain.setValueAtTime(0.001, now);
+  whineGain.gain.linearRampToValueAtTime(0.03, now + 0.15);
+  whineGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+  whine.connect(whineGain);
+  whineGain.connect(ctx.destination);
+  whine.start(now);
+  whine.stop(now + duration);
+};
+
 /** Hyperspace whoosh */
 export const playHyperspaceJump = () => {
   const ctx = getCtx();
@@ -251,6 +296,7 @@ export const useStarWarsSounds = () => ({
   playBlasterShot: useCallback(playBlasterShot, []),
   playImperialMarch: useCallback(playImperialMarch, []),
   playHyperspaceJump: useCallback(playHyperspaceJump, []),
+  playTieFighterScream: useCallback(playTieFighterScream, []),
   startVaderBreathing: useCallback(startVaderBreathing, []),
   stopVaderBreathing: useCallback(stopVaderBreathing, []),
 });

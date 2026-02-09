@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { playTieFighterScream } from "@/hooks/useStarWarsSounds";
 
 interface Star {
   x: number;
@@ -182,7 +183,12 @@ const StarfieldBackground = () => {
         ship.x += ship.speed;
         // Respawn if off screen
         if ((ship.speed > 0 && ship.x > w + 80) || (ship.speed < 0 && ship.x < -80)) {
-          shipsRef.current[i] = createShip(w, h);
+          const newShip = createShip(w, h);
+          shipsRef.current[i] = newShip;
+          // TIE Fighters scream when they appear
+          if (newShip.type === "tie") {
+            try { playTieFighterScream(); } catch {}
+          }
         }
         drawShip(ctx, ship, primaryColor);
       }
