@@ -8,6 +8,7 @@ import MatrixRain from "@/components/MatrixRain";
 import GlitchOverlay from "@/components/GlitchOverlay";
 import SecretTerminal from "@/components/SecretTerminal";
 import KonamiPad from "@/components/KonamiPad";
+import DarthVaderOverlay from "@/components/DarthVaderOverlay";
 import StarfieldBackground from "@/components/StarfieldBackground";
 import HyperspaceOverlay from "@/components/HyperspaceOverlay";
 import { useKonamiCode } from "@/hooks/useKonamiCode";
@@ -24,6 +25,7 @@ const Index = () => {
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [konamiPadOpen, setKonamiPadOpen] = useState(false);
   const [hyperspaceActive, setHyperspaceActive] = useState(false);
+  const [vaderActive, setVaderActive] = useState(false);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleHeadlineClick = () => {
@@ -44,6 +46,10 @@ const Index = () => {
     setHyperspaceActive(false);
   }, []);
 
+  const handleVaderComplete = useCallback(() => {
+    setVaderActive(false);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
       {/* Easter egg overlays */}
@@ -52,6 +58,7 @@ const Index = () => {
       </AnimatePresence>
       <GlitchOverlay active={glitchActive} onComplete={handleGlitchComplete} />
       <HyperspaceOverlay active={hyperspaceActive} onComplete={handleHyperspaceComplete} />
+      <DarthVaderOverlay active={vaderActive} onComplete={handleVaderComplete} />
       <SecretTerminal visible={terminalOpen} onClose={() => setTerminalOpen(false)} />
       <KonamiPad open={konamiPadOpen} onClose={() => setKonamiPadOpen(false)} onActivate={activateKonami} />
 
@@ -125,9 +132,10 @@ const Index = () => {
       <footer className="w-full px-6 py-10 border-t border-border text-center space-y-3 relative z-10">
         <p className="text-sm text-muted-foreground group">
           <span
-            className="relative inline-block cursor-default select-none"
+            className="relative inline-block cursor-pointer select-none"
+            onClick={() => setVaderActive(true)}
             onTouchStart={() => {
-              longPressTimer.current = setTimeout(() => setKonamiPadOpen(true), 800);
+              longPressTimer.current = setTimeout(() => setVaderActive(true), 800);
             }}
             onTouchEnd={() => {
               if (longPressTimer.current) clearTimeout(longPressTimer.current);
@@ -138,7 +146,7 @@ const Index = () => {
           >
             ⚔️
             <span className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] text-primary whitespace-nowrap bg-card border border-primary/30 px-2 py-1 rounded pointer-events-none">
-              hold for Jedi secrets 👀
+              embrace the dark side 🖤
             </span>
           </span>{" "}
           Powered by yt-dlp • spotdl • librespot
