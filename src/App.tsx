@@ -9,6 +9,7 @@ import ThemeSwitcher from "@/components/ThemeSwitcher";
 import DemoBanner from "@/components/DemoBanner";
 import OpeningCrawl from "@/components/OpeningCrawl";
 import LightsaberCursor from "@/components/LightsaberCursor";
+import ForcePush from "@/components/ForcePush";
 import { isTauri } from "@/lib/tauri";
 
 const Index = lazy(() => import("./pages/Index"));
@@ -30,6 +31,7 @@ const App = () => {
         <TooltipProvider>
           {!crawlDone && <OpeningCrawl onComplete={handleCrawlComplete} />}
           <LightsaberCursor />
+          <ForcePush />
           <Toaster />
           <Sonner />
           <ThemeSwitcher />

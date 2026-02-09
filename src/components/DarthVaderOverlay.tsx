@@ -43,7 +43,7 @@ const DarthVaderOverlay = ({ active, onComplete }: DarthVaderOverlayProps) => {
           transition={{ duration: 0.8 }}
           className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none"
           style={{
-            background: "radial-gradient(ellipse at center, rgba(180,0,0,0.15) 0%, rgba(0,0,0,0.92) 70%)",
+            background: "radial-gradient(ellipse at center, rgba(180,0,0,0.2) 0%, rgba(0,0,0,0.96) 60%)",
           }}
         >
           {/* Red lightsaber glow line */}

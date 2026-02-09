@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { playR2D2Beep } from "@/hooks/useStarWarsSounds";
 
 interface QualitySelectorProps {
   mode: "video" | "audio";
@@ -19,7 +20,7 @@ const QualitySelector = ({ mode, quality, onQualityChange }: QualitySelectorProp
           key={opt}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => onQualityChange(opt)}
+          onClick={() => { playR2D2Beep(); onQualityChange(opt); }}
           className={`px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
             quality === opt
               ? "bg-primary text-primary-foreground"

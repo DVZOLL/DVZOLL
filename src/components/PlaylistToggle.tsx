@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ListMusic } from "lucide-react";
+import { playR2D2Beep } from "@/hooks/useStarWarsSounds";
 
 interface PlaylistToggleProps {
   isPlaylist: boolean;
@@ -10,7 +11,7 @@ const PlaylistToggle = ({ isPlaylist, onToggle }: PlaylistToggleProps) => {
   return (
     <motion.button
       whileTap={{ scale: 0.95 }}
-      onClick={() => onToggle(!isPlaylist)}
+      onClick={() => { playR2D2Beep(); onToggle(!isPlaylist); }}
       className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold uppercase tracking-widest border transition-all duration-200 ${
         isPlaylist
           ? "bg-primary text-primary-foreground border-primary"
