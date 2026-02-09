@@ -136,49 +136,32 @@ export const playImperialMarch = () => {
   });
 };
 
-/** TIE Fighter scream — iconic doppler howl */
-export const playTieFighterScream = () => {
+/** R2-D2 beep — cheerful chirp for settings feedback */
+export const playR2D2Beep = () => {
   const ctx = getCtx();
   const now = ctx.currentTime;
-  const duration = 1.2;
 
   const masterGain = ctx.createGain();
   masterGain.connect(ctx.destination);
-  masterGain.gain.setValueAtTime(0.001, now);
-  masterGain.gain.linearRampToValueAtTime(0.06, now + 0.2);
-  masterGain.gain.setValueAtTime(0.06, now + 0.5);
-  masterGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+  masterGain.gain.setValueAtTime(0.1, now);
 
-  // Core screech — two detuned sawtooths
-  const osc1 = ctx.createOscillator();
-  osc1.type = "sawtooth";
-  osc1.frequency.setValueAtTime(900, now);
-  osc1.frequency.exponentialRampToValueAtTime(600, now + duration);
-  osc1.connect(masterGain);
-  osc1.start(now);
-  osc1.stop(now + duration);
-
-  const osc2 = ctx.createOscillator();
-  osc2.type = "sawtooth";
-  osc2.frequency.setValueAtTime(920, now);
-  osc2.frequency.exponentialRampToValueAtTime(580, now + duration);
-  osc2.connect(masterGain);
-  osc2.start(now);
-  osc2.stop(now + duration);
-
-  // High whine
-  const whine = ctx.createOscillator();
-  whine.type = "sine";
-  whine.frequency.setValueAtTime(1800, now);
-  whine.frequency.exponentialRampToValueAtTime(1200, now + duration);
-  const whineGain = ctx.createGain();
-  whineGain.gain.setValueAtTime(0.001, now);
-  whineGain.gain.linearRampToValueAtTime(0.03, now + 0.15);
-  whineGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-  whine.connect(whineGain);
-  whineGain.connect(ctx.destination);
-  whine.start(now);
-  whine.stop(now + duration);
+  // Quick ascending chirps
+  const freqs = [1200, 1600, 2000, 1400, 1800];
+  const dur = 0.07;
+  freqs.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    const t = now + i * (dur + 0.02);
+    osc.frequency.setValueAtTime(freq, t);
+    osc.frequency.linearRampToValueAtTime(freq * 1.1, t + dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.08, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + dur);
+  });
 };
 
 /** Hyperspace whoosh */
@@ -296,7 +279,7 @@ export const useStarWarsSounds = () => ({
   playBlasterShot: useCallback(playBlasterShot, []),
   playImperialMarch: useCallback(playImperialMarch, []),
   playHyperspaceJump: useCallback(playHyperspaceJump, []),
-  playTieFighterScream: useCallback(playTieFighterScream, []),
+  playR2D2Beep: useCallback(playR2D2Beep, []),
   startVaderBreathing: useCallback(startVaderBreathing, []),
   stopVaderBreathing: useCallback(stopVaderBreathing, []),
 });
