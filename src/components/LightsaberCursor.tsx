@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 
-const TRAIL_LENGTH = 12;
-const FADE_SPEED = 0.92;
+const TRAIL_LENGTH = 14;
+const FADE_SPEED = 0.88;
+const LERP_FACTOR = 0.35;
 
 interface TrailPoint {
   x: number;
@@ -13,6 +14,7 @@ const LightsaberCursor = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const trailRef = useRef<TrailPoint[]>([]);
   const mouseRef = useRef({ x: -100, y: -100 });
+  const smoothRef = useRef({ x: -100, y: -100 });
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
@@ -31,10 +33,6 @@ const LightsaberCursor = () => {
 
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
-      trailRef.current.unshift({ x: e.clientX, y: e.clientY, opacity: 1 });
-      if (trailRef.current.length > TRAIL_LENGTH) {
-        trailRef.current.pop();
-      }
     };
     window.addEventListener("mousemove", handleMouseMove);
 
@@ -48,6 +46,14 @@ const LightsaberCursor = () => {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const primary = getPrimaryColor();
+
+      // Smooth interpolation toward actual mouse
+      smoothRef.current.x += (mouseRef.current.x - smoothRef.current.x) * LERP_FACTOR;
+      smoothRef.current.y += (mouseRef.current.y - smoothRef.current.y) * LERP_FACTOR;
+
+      // Add smoothed position to trail
+      trailRef.current.unshift({ x: smoothRef.current.x, y: smoothRef.current.y, opacity: 1 });
+      if (trailRef.current.length > TRAIL_LENGTH) trailRef.current.pop();
 
       const trail = trailRef.current;
       
@@ -80,15 +86,16 @@ const LightsaberCursor = () => {
         ctx.stroke();
       }
 
-      // Glow dot at cursor
-      const { x, y } = mouseRef.current;
+      // Glow dot at cursor (using smoothed position)
+      const { x, y } = smoothRef.current;
       if (x > 0 && y > 0) {
-        const gradient = ctx.createRadialGradient(x, y, 0, x, y, 8);
-        gradient.addColorStop(0, `hsla(${primary} / 0.4)`);
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, 10);
+        gradient.addColorStop(0, `hsla(${primary} / 0.5)`);
+        gradient.addColorStop(0.5, `hsla(${primary} / 0.15)`);
         gradient.addColorStop(1, `hsla(${primary} / 0)`);
         ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.arc(x, y, 10, 0, Math.PI * 2);
         ctx.fill();
       }
 
