@@ -274,6 +274,86 @@ export const stopVaderBreathing = () => {
   vaderStopFn?.();
 };
 
+/** Cantina Band — procedural Mos Eisley cantina music loop */
+let cantinaStopFn: (() => void) | null = null;
+
+export const startCantinaBand = () => {
+  if (cantinaStopFn) return;
+  const ctx = getCtx();
+  let stopped = false;
+
+  // Simple cantina melody notes (frequency, duration, gap)
+  const melody: [number, number][] = [
+    [587.33, 0.15], // D5
+    [622.25, 0.15], // Eb5
+    [587.33, 0.15], // D5
+    [466.16, 0.3],  // Bb4
+    [587.33, 0.15], // D5
+    [622.25, 0.15], // Eb5
+    [587.33, 0.15], // D5
+    [466.16, 0.15], // Bb4
+    [392.00, 0.15], // G4
+    [392.00, 0.15], // G4
+    [349.23, 0.3],  // F4
+    [392.00, 0.15], // G4
+    [349.23, 0.15], // F4
+    [311.13, 0.3],  // Eb4
+    [349.23, 0.15], // F4
+    [311.13, 0.15], // Eb4
+    [293.66, 0.45], // D4
+  ];
+
+  const playMelodyCycle = () => {
+    if (stopped) return;
+    const now = ctx.currentTime;
+    let t = now;
+
+    melody.forEach(([freq, dur]) => {
+      if (stopped) return;
+      const osc = ctx.createOscillator();
+      osc.type = "square";
+      osc.frequency.value = freq;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.06, t);
+      g.gain.setValueAtTime(0.06, t + dur - 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.connect(g);
+      g.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + dur);
+      t += dur + 0.02;
+    });
+
+    // Bass line (simple oom-pah)
+    for (let i = 0; i < 8; i++) {
+      if (stopped) return;
+      const bass = ctx.createOscillator();
+      bass.type = "triangle";
+      bass.frequency.value = i % 2 === 0 ? 146.83 : 196.00; // D3 / G3
+      const bTime = now + i * 0.35;
+      const bGain = ctx.createGain();
+      bGain.gain.setValueAtTime(0.04, bTime);
+      bGain.gain.exponentialRampToValueAtTime(0.001, bTime + 0.2);
+      bass.connect(bGain);
+      bGain.connect(ctx.destination);
+      bass.start(bTime);
+      bass.stop(bTime + 0.25);
+    }
+
+    const totalDur = melody.reduce((acc, [, d]) => acc + d + 0.02, 0);
+    setTimeout(() => playMelodyCycle(), totalDur * 1000 + 200);
+  };
+
+  playMelodyCycle();
+  cantinaStopFn = () => { stopped = true; cantinaStopFn = null; };
+};
+
+export const stopCantinaBand = () => {
+  cantinaStopFn?.();
+};
+
+export const isCantinaBandPlaying = () => cantinaStopFn !== null;
+
 export const useStarWarsSounds = () => ({
   playLightsaberIgnite: useCallback(playLightsaberIgnite, []),
   playBlasterShot: useCallback(playBlasterShot, []),
@@ -282,4 +362,6 @@ export const useStarWarsSounds = () => ({
   playR2D2Beep: useCallback(playR2D2Beep, []),
   startVaderBreathing: useCallback(startVaderBreathing, []),
   stopVaderBreathing: useCallback(stopVaderBreathing, []),
+  startCantinaBand: useCallback(startCantinaBand, []),
+  stopCantinaBand: useCallback(stopCantinaBand, []),
 });

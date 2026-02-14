@@ -3,26 +3,27 @@ import { motion, AnimatePresence } from "framer-motion";
 import PlatformTicker from "@/components/PlatformTicker";
 import DownloadCard from "@/components/DownloadCard";
 import FeatureGrid from "@/components/FeatureGrid";
-import AboutSection from "@/components/AboutSection";
+import CantinaBandToggle from "@/components/CantinaBandToggle";
 import MatrixRain from "@/components/MatrixRain";
 import GlitchOverlay from "@/components/GlitchOverlay";
-import SecretTerminal from "@/components/SecretTerminal";
+// SecretTerminal moved to Settings page
 import KonamiPad from "@/components/KonamiPad";
 import DarthVaderOverlay from "@/components/DarthVaderOverlay";
 import StarfieldBackground from "@/components/StarfieldBackground";
 import HyperspaceOverlay from "@/components/HyperspaceOverlay";
 import { useKonamiCode } from "@/hooks/useKonamiCode";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
+// Note: AboutSection and SecretTerminal moved to Settings page
 import { useStarWarsSounds } from "@/hooks/useStarWarsSounds";
 import logo from "@/assets/logo.png";
 
 const Index = () => {
   const { activated: konamiActive, reset: resetKonami, activate: activateKonami } = useKonamiCode();
-  const { playGlitch, playTerminalBoot } = useSoundEffects();
+  const { playGlitch } = useSoundEffects();
   const { playHyperspaceJump } = useStarWarsSounds();
   const [glitchActive, setGlitchActive] = useState(false);
   const [headlineClicks, setHeadlineClicks] = useState(0);
-  const [terminalOpen, setTerminalOpen] = useState(false);
+  
   const [konamiPadOpen, setKonamiPadOpen] = useState(false);
   const [hyperspaceActive, setHyperspaceActive] = useState(false);
   const [vaderActive, setVaderActive] = useState(false);
@@ -59,7 +60,7 @@ const Index = () => {
       <GlitchOverlay active={glitchActive} onComplete={handleGlitchComplete} />
       <HyperspaceOverlay active={hyperspaceActive} onComplete={handleHyperspaceComplete} />
       <DarthVaderOverlay active={vaderActive} onComplete={handleVaderComplete} />
-      <SecretTerminal visible={terminalOpen} onClose={() => setTerminalOpen(false)} />
+      
       <KonamiPad open={konamiPadOpen} onClose={() => setKonamiPadOpen(false)} onActivate={activateKonami} />
 
       {/* Animated starfield with flying starships */}
@@ -125,8 +126,8 @@ const Index = () => {
       {/* Features Section */}
       <FeatureGrid />
 
-      {/* About & Story */}
-      <AboutSection onAvatarSecret={() => { playTerminalBoot(); setTerminalOpen(true); }} />
+      {/* Cantina Band toggle */}
+      <CantinaBandToggle />
 
       {/* Footer */}
       <footer className="w-full px-6 py-10 border-t border-border text-center space-y-3 relative z-10">

@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import { isTauri, tauriCheckTools, tauriGetDownloadDir } from "@/lib/tauri";
 import { useNavigate } from "react-router-dom";
 import { useSettings } from "@/hooks/useSettings";
+import AboutSection from "@/components/AboutSection";
+import SecretTerminal from "@/components/SecretTerminal";
+import { useSoundEffects } from "@/hooks/useSoundEffects";
 import {
   ArrowLeft,
   FolderOpen,
@@ -14,6 +17,8 @@ import {
   Terminal,
   Wrench,
   Info,
+  User,
+  Settings as SettingsIcon,
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 
@@ -55,22 +60,25 @@ const DEFAULT_TOOLS: ToolInfo[] = [
 
 const isDesktop = isTauri();
 
+type TabKey = "general" | "developer";
+
 const Settings = () => {
   const { settings, update } = useSettings();
   const navigate = useNavigate();
+  const { playTerminalBoot } = useSoundEffects();
+  const [activeTab, setActiveTab] = useState<TabKey>("general");
   const [downloadPath, setDownloadPath] = useState(settings.downloadPath);
   const [tools, setTools] = useState<ToolInfo[]>(DEFAULT_TOOLS);
   const [isChecking, setIsChecking] = useState(false);
   const [autoUpdate, setAutoUpdate] = useState(settings.autoUpdate);
   const [notifications, setNotifications] = useState(settings.notifications);
   const [concurrentDownloads, setConcurrentDownloads] = useState(settings.concurrentDownloads);
+  const [terminalOpen, setTerminalOpen] = useState(false);
 
-  // Persist changes
   useEffect(() => {
     update({ downloadPath, autoUpdate, notifications, concurrentDownloads });
   }, [downloadPath, autoUpdate, notifications, concurrentDownloads, update]);
 
-  // On desktop, fetch real download dir and tool status on mount
   useEffect(() => {
     if (!isDesktop) return;
     tauriGetDownloadDir().then((dir) => setDownloadPath(dir)).catch(() => {});
@@ -122,7 +130,6 @@ const Settings = () => {
     if (!isDesktop) return;
     try {
       const tauri = (window as any).__TAURI__;
-      // Use Tauri's dialog API to open a folder picker
       const selected = await tauri.dialog.open({
         directory: true,
         multiple: false,
@@ -132,25 +139,29 @@ const Settings = () => {
       if (selected && typeof selected === "string") {
         setDownloadPath(selected);
       }
-    } catch {
-      // User cancelled or dialog unavailable
-    }
+    } catch {}
   };
+
+  const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
+    { key: "general", label: "General", icon: <SettingsIcon className="w-4 h-4" /> },
+    { key: "developer", label: "Developer", icon: <User className="w-4 h-4" /> },
+  ];
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Ambient orbs */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div className="ambient-orb ambient-orb-1" />
         <div className="ambient-orb ambient-orb-2" />
       </div>
+
+      <SecretTerminal visible={terminalOpen} onClose={() => setTerminalOpen(false)} />
 
       <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-4 mb-10"
+          className="flex items-center gap-4 mb-8"
         >
           <button
             onClick={() => navigate("/")}
@@ -167,246 +178,270 @@ const Settings = () => {
           </div>
         </motion.div>
 
-        <div className="space-y-8">
-          {/* Download Path Section */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-card border border-border rounded-xl p-5 space-y-4"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <FolderOpen className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h2 className="text-base font-semibold text-foreground">Download Location</h2>
-                <p className="text-xs text-muted-foreground">Where files are saved on your machine</p>
-              </div>
-            </div>
+        {/* Tab Bar */}
+        <div className="flex gap-1 mb-8 bg-card border border-border rounded-xl p-1">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                activeTab === tab.key
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={downloadPath}
-                onChange={(e) => setDownloadPath(e.target.value)}
-                className="flex-1 bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors font-mono"
-              />
-              <button
-                onClick={handleBrowse}
-                disabled={!isDesktop}
-                className="px-4 py-2.5 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium hover:bg-secondary/80 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <FolderOpen className="w-4 h-4" />
-                Browse
-              </button>
-            </div>
-
-            <div className="flex items-start gap-2 p-3 bg-primary/5 rounded-lg border border-primary/10">
-              <Info className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-              <p className="text-xs text-muted-foreground">
-                In the desktop app, you can browse and select any folder. The web app uses this as a
-                display preference only.
-              </p>
-            </div>
-          </motion.section>
-
-          {/* Download Preferences */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="bg-card border border-border rounded-xl p-5 space-y-4"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Download className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h2 className="text-base font-semibold text-foreground">Download Preferences</h2>
-                <p className="text-xs text-muted-foreground">Default behavior for new downloads</p>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between py-2">
-                <div>
-                  <p className="text-sm text-foreground">Concurrent downloads</p>
-                  <p className="text-xs text-muted-foreground">Max simultaneous downloads for playlists</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setConcurrentDownloads(Math.max(1, concurrentDownloads - 1))}
-                    className="w-8 h-8 rounded-md bg-secondary text-secondary-foreground text-sm font-bold hover:bg-secondary/80 transition-colors"
-                  >
-                    −
-                  </button>
-                  <span className="w-8 text-center text-sm font-bold text-foreground">{concurrentDownloads}</span>
-                  <button
-                    onClick={() => setConcurrentDownloads(Math.min(8, concurrentDownloads + 1))}
-                    className="w-8 h-8 rounded-md bg-secondary text-secondary-foreground text-sm font-bold hover:bg-secondary/80 transition-colors"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
-              <div className="border-t border-border" />
-
-              <label className="flex items-center justify-between py-2 cursor-pointer">
-                <div>
-                  <p className="text-sm text-foreground">Auto-update tools</p>
-                  <p className="text-xs text-muted-foreground">Keep yt-dlp and spotdl updated automatically</p>
-                </div>
-                <div
-                  onClick={() => setAutoUpdate(!autoUpdate)}
-                  className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
-                    autoUpdate ? "bg-primary" : "bg-secondary"
-                  }`}
-                >
-                  <div
-                    className={`w-5 h-5 bg-primary-foreground rounded-full absolute top-0.5 transition-transform ${
-                      autoUpdate ? "translate-x-[22px]" : "translate-x-0.5"
-                    }`}
-                  />
-                </div>
-              </label>
-
-              <div className="border-t border-border" />
-
-              <label className="flex items-center justify-between py-2 cursor-pointer">
-                <div>
-                  <p className="text-sm text-foreground">Notifications</p>
-                  <p className="text-xs text-muted-foreground">Show notification when download completes</p>
-                </div>
-                <div
-                  onClick={() => setNotifications(!notifications)}
-                  className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
-                    notifications ? "bg-primary" : "bg-secondary"
-                  }`}
-                >
-                  <div
-                    className={`w-5 h-5 bg-primary-foreground rounded-full absolute top-0.5 transition-transform ${
-                      notifications ? "translate-x-[22px]" : "translate-x-0.5"
-                    }`}
-                  />
-                </div>
-              </label>
-            </div>
-          </motion.section>
-
-          {/* Tools Section */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-card border border-border rounded-xl p-5 space-y-4"
-          >
-            <div className="flex items-center justify-between">
+        {activeTab === "general" && (
+          <div className="space-y-8">
+            {/* Download Path Section */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-card border border-border rounded-xl p-5 space-y-4"
+            >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Wrench className="w-5 h-5 text-primary" />
+                  <FolderOpen className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-base font-semibold text-foreground">Tool Status</h2>
-                  <p className="text-xs text-muted-foreground">Required download engines</p>
+                  <h2 className="text-base font-semibold text-foreground">Download Location</h2>
+                  <p className="text-xs text-muted-foreground">Where files are saved on your machine</p>
                 </div>
               </div>
-              <button
-                onClick={handleCheckToolsReal}
-                disabled={isChecking}
-                className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors disabled:opacity-50"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isChecking ? "animate-spin" : ""}`} />
-                {isChecking ? "Checking…" : "Re-check"}
-              </button>
-            </div>
 
-            <div className="space-y-2">
-              {tools.map((tool) => (
-                <div
-                  key={tool.name}
-                  className="flex items-center gap-4 p-3 rounded-lg bg-background/50 border border-border/50"
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={downloadPath}
+                  onChange={(e) => setDownloadPath(e.target.value)}
+                  className="flex-1 bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors font-mono"
+                />
+                <button
+                  onClick={handleBrowse}
+                  disabled={!isDesktop}
+                  className="px-4 py-2.5 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium hover:bg-secondary/80 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {/* Status indicator */}
-                  <div className="shrink-0">
-                    {tool.status === "installed" ? (
-                      <CheckCircle2 className="w-5 h-5 text-primary" />
-                    ) : tool.status === "missing" ? (
-                      <XCircle className="w-5 h-5 text-destructive" />
-                    ) : (
-                      <RefreshCw className="w-5 h-5 text-muted-foreground animate-spin" />
-                    )}
-                  </div>
+                  <FolderOpen className="w-4 h-4" />
+                  Browse
+                </button>
+              </div>
 
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-foreground">{tool.name}</span>
-                      {tool.version && tool.status === "installed" && (
-                        <span className="text-xs text-muted-foreground font-mono">v{tool.version}</span>
+              <div className="flex items-start gap-2 p-3 bg-primary/5 rounded-lg border border-primary/10">
+                <Info className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                <p className="text-xs text-muted-foreground">
+                  In the desktop app, you can browse and select any folder. The web app uses this as a
+                  display preference only.
+                </p>
+              </div>
+            </motion.section>
+
+            {/* Download Preferences */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="bg-card border border-border rounded-xl p-5 space-y-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Download className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold text-foreground">Download Preferences</h2>
+                  <p className="text-xs text-muted-foreground">Default behavior for new downloads</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between py-2">
+                  <div>
+                    <p className="text-sm text-foreground">Concurrent downloads</p>
+                    <p className="text-xs text-muted-foreground">Max simultaneous downloads for playlists</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setConcurrentDownloads(Math.max(1, concurrentDownloads - 1))}
+                      className="w-8 h-8 rounded-md bg-secondary text-secondary-foreground text-sm font-bold hover:bg-secondary/80 transition-colors"
+                    >
+                      −
+                    </button>
+                    <span className="w-8 text-center text-sm font-bold text-foreground">{concurrentDownloads}</span>
+                    <button
+                      onClick={() => setConcurrentDownloads(Math.min(8, concurrentDownloads + 1))}
+                      className="w-8 h-8 rounded-md bg-secondary text-secondary-foreground text-sm font-bold hover:bg-secondary/80 transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div className="border-t border-border" />
+
+                <label className="flex items-center justify-between py-2 cursor-pointer">
+                  <div>
+                    <p className="text-sm text-foreground">Auto-update tools</p>
+                    <p className="text-xs text-muted-foreground">Keep yt-dlp and spotdl updated automatically</p>
+                  </div>
+                  <div
+                    onClick={() => setAutoUpdate(!autoUpdate)}
+                    className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+                      autoUpdate ? "bg-primary" : "bg-secondary"
+                    }`}
+                  >
+                    <div
+                      className={`w-5 h-5 bg-primary-foreground rounded-full absolute top-0.5 transition-transform ${
+                        autoUpdate ? "translate-x-[22px]" : "translate-x-0.5"
+                      }`}
+                    />
+                  </div>
+                </label>
+
+                <div className="border-t border-border" />
+
+                <label className="flex items-center justify-between py-2 cursor-pointer">
+                  <div>
+                    <p className="text-sm text-foreground">Notifications</p>
+                    <p className="text-xs text-muted-foreground">Show notification when download completes</p>
+                  </div>
+                  <div
+                    onClick={() => setNotifications(!notifications)}
+                    className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+                      notifications ? "bg-primary" : "bg-secondary"
+                    }`}
+                  >
+                    <div
+                      className={`w-5 h-5 bg-primary-foreground rounded-full absolute top-0.5 transition-transform ${
+                        notifications ? "translate-x-[22px]" : "translate-x-0.5"
+                      }`}
+                    />
+                  </div>
+                </label>
+              </div>
+            </motion.section>
+
+            {/* Tools Section */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-card border border-border rounded-xl p-5 space-y-4"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Wrench className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-semibold text-foreground">Tool Status</h2>
+                    <p className="text-xs text-muted-foreground">Required download engines</p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleCheckToolsReal}
+                  disabled={isChecking}
+                  className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isChecking ? "animate-spin" : ""}`} />
+                  {isChecking ? "Checking…" : "Re-check"}
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {tools.map((tool) => (
+                  <div
+                    key={tool.name}
+                    className="flex items-center gap-4 p-3 rounded-lg bg-background/50 border border-border/50"
+                  >
+                    <div className="shrink-0">
+                      {tool.status === "installed" ? (
+                        <CheckCircle2 className="w-5 h-5 text-primary" />
+                      ) : tool.status === "missing" ? (
+                        <XCircle className="w-5 h-5 text-destructive" />
+                      ) : (
+                        <RefreshCw className="w-5 h-5 text-muted-foreground animate-spin" />
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">{tool.description}</p>
-                  </div>
-
-                  {/* Path / Install */}
-                  <div className="shrink-0 text-right">
-                    {tool.status === "installed" ? (
-                      <p className="text-xs text-muted-foreground font-mono truncate max-w-[160px]">{tool.path}</p>
-                    ) : tool.status === "missing" ? (
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <code className="text-xs bg-secondary px-2 py-1 rounded text-foreground font-mono">
-                          {tool.installCmd}
-                        </code>
+                        <span className="text-sm font-semibold text-foreground">{tool.name}</span>
+                        {tool.version && tool.status === "installed" && (
+                          <span className="text-xs text-muted-foreground font-mono">v{tool.version}</span>
+                        )}
                       </div>
-                    ) : null}
+                      <p className="text-xs text-muted-foreground">{tool.description}</p>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      {tool.status === "installed" ? (
+                        <p className="text-xs text-muted-foreground font-mono truncate max-w-[160px]">{tool.path}</p>
+                      ) : tool.status === "missing" ? (
+                        <div className="flex items-center gap-2">
+                          <code className="text-xs bg-secondary px-2 py-1 rounded text-foreground font-mono">
+                            {tool.installCmd}
+                          </code>
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
+                ))}
+              </div>
+
+              <div className="flex items-start gap-2 p-3 bg-primary/5 rounded-lg border border-primary/10">
+                <Terminal className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                <p className="text-xs text-muted-foreground">
+                  In the desktop app, tools are auto-detected and can be installed with one click.
+                  Run <code className="text-foreground bg-secondary px-1 rounded">./scripts/setup-macos.sh</code> to install all prerequisites at once.
+                </p>
+              </div>
+            </motion.section>
+
+            {/* Storage info */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+              className="bg-card border border-border rounded-xl p-5 space-y-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <HardDrive className="w-5 h-5 text-primary" />
                 </div>
-              ))}
-            </div>
+                <div>
+                  <h2 className="text-base font-semibold text-foreground">Storage</h2>
+                  <p className="text-xs text-muted-foreground">Disk usage from DVZOLL downloads</p>
+                </div>
+              </div>
 
-            <div className="flex items-start gap-2 p-3 bg-primary/5 rounded-lg border border-primary/10">
-              <Terminal className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-              <p className="text-xs text-muted-foreground">
-                In the desktop app, tools are auto-detected and can be installed with one click.
-                Run <code className="text-foreground bg-secondary px-1 rounded">./scripts/setup-macos.sh</code> to install all prerequisites at once.
-              </p>
-            </div>
-          </motion.section>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Used</span>
+                  <span className="text-foreground font-medium">2.4 GB</span>
+                </div>
+                <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
+                  <div className="h-full bg-primary rounded-full" style={{ width: "24%" }} />
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>47 files</span>
+                  <span>10 GB available</span>
+                </div>
+              </div>
+            </motion.section>
+          </div>
+        )}
 
-          {/* Storage info */}
-          <motion.section
+        {activeTab === "developer" && (
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-            className="bg-card border border-border rounded-xl p-5 space-y-4"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <HardDrive className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h2 className="text-base font-semibold text-foreground">Storage</h2>
-                <p className="text-xs text-muted-foreground">Disk usage from DVZOLL downloads</p>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Used</span>
-                <span className="text-foreground font-medium">2.4 GB</span>
-              </div>
-              <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
-                <div className="h-full bg-primary rounded-full" style={{ width: "24%" }} />
-              </div>
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>47 files</span>
-                <span>10 GB available</span>
-              </div>
-            </div>
-          </motion.section>
-        </div>
+            <AboutSection onAvatarSecret={() => { playTerminalBoot(); setTerminalOpen(true); }} />
+          </motion.div>
+        )}
 
         {/* Footer */}
         <motion.p

@@ -55,7 +55,7 @@ const FeatureGrid = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="group bg-card border border-border rounded-xl p-6 hover:border-primary/30 transition-all hover:shadow-[0_0_20px_hsl(var(--primary)/0.1)]"
+              className="group bg-card border border-border rounded-xl p-6 hover:border-primary/30 transition-all hover:shadow-[0_0_20px_hsl(var(--primary)/0.1)] hologram-card relative overflow-hidden"
             >
               <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center mb-5 group-hover:shadow-[0_0_12px_hsl(var(--primary)/0.3)] transition-shadow">
                 <f.icon className="w-5 h-5 text-primary" />
@@ -63,6 +63,10 @@ const FeatureGrid = () => {
               <h3 className="text-base font-bold text-foreground mb-2">{f.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">{f.desc}</p>
               <p className="text-xs italic text-primary/50 leading-relaxed">"{f.swQuote}"</p>
+              {/* Holographic scanlines overlay */}
+              <div className="absolute inset-0 sw-scanlines pointer-events-none rounded-xl" />
+              {/* Holographic scan shimmer */}
+              <div className="absolute inset-0 hologram-shimmer pointer-events-none rounded-xl opacity-50" />
             </motion.div>
           ))}
         </div>

@@ -164,9 +164,18 @@ const StarfieldBackground = () => {
       ctx.fillStyle = "rgba(8, 12, 10, 0.15)";
       ctx.fillRect(0, 0, w, h);
 
-      // Draw stars with parallax twinkle
+      // Draw stars with parallax twinkle + slow drift
       const time = Date.now() * 0.001;
       for (const star of starsRef.current) {
+        // Slow drift based on depth (z)
+        star.x += Math.sin(time * 0.1 + star.y * 0.01) * 0.02 * star.z;
+        star.y += Math.cos(time * 0.08 + star.x * 0.01) * 0.015 * star.z;
+        // Wrap around
+        if (star.x < 0) star.x = w;
+        if (star.x > w) star.x = 0;
+        if (star.y < 0) star.y = h;
+        if (star.y > h) star.y = 0;
+
         const twinkle = Math.sin(time * star.z + star.x) * 0.3 + 0.7;
         ctx.globalAlpha = star.brightness * twinkle;
         ctx.fillStyle = Math.random() > 0.95 ? primaryColor : "white";
